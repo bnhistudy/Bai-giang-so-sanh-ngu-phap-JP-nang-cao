@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aがたい vs Aにくい</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Be+Vietnam+Pro:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#FBF7F2; --card:#FFFFFF; --ink:#2E2A33; --ink-soft:#756E7E; --line:#EDE4EE;
+    --point-a:#E07A5F; --point-a-bg:#FDECE6;   /* がたい — cảm xúc, ấm */
+    --point-b:#2A9D8F; --point-b-bg:#E6F5F2;   /* にくい — chức năng, lạnh */
+    --shadow:0 10px 30px -12px rgba(46,42,51,.16);
+    --shadow-sm:0 4px 14px -6px rgba(46,42,51,.14);
+    --radius:20px;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:radial-gradient(circle at 8% 0%,#fbeae4 0%,transparent 45%),radial-gradient(circle at 100% 10%,#eaf5ef 0%,transparent 40%),var(--bg);color:var(--ink);font-family:'Be Vietnam Pro',sans-serif;line-height:1.65;padding-bottom:60px;}
+  .jp{font-family:'Noto Sans JP',sans-serif;}
+  h1,h2,h3{font-family:'Baloo 2',sans-serif;}
+  .wrap{max-width:900px;margin:0 auto;padding:0 20px;}
+
+  .hero{max-width:900px;margin:0 auto;padding:48px 20px 20px;text-align:center;}
+  .hero .eyebrow{display:inline-flex;gap:8px;font-size:13px;font-weight:700;letter-spacing:.06em;color:var(--point-a);background:var(--point-a-bg);padding:6px 14px;border-radius:999px;margin-bottom:18px;}
+  .hero h1{font-size:clamp(28px,5vw,42px);font-weight:800;margin:0 0 10px;}
+  .hero p{color:var(--ink-soft);max-width:600px;margin:0 auto;}
+
+  .tabbar{max-width:900px;margin:40px auto 0;padding:0 20px;display:grid;grid-template-columns:repeat(2,1fr);gap:10px;}
+  .tab-btn{border:2px solid var(--line);background:var(--card);border-radius:16px;padding:14px 8px;cursor:pointer;text-align:center;transition:.15s;font-family:'Noto Sans JP',sans-serif;font-size:19px;font-weight:700;color:var(--ink);}
+  .tab-btn:hover{transform:translateY(-3px);box-shadow:var(--shadow-sm);}
+  .tab-btn.active{border-color:var(--accent);background:var(--accent-bg);box-shadow:var(--shadow-sm);}
+  .tab-btn[data-key="a"]{--accent:var(--point-a);--accent-bg:var(--point-a-bg);}
+  .tab-btn[data-key="b"]{--accent:var(--point-b);--accent-bg:var(--point-b-bg);}
+
+  .panel{display:none;max-width:900px;margin:26px auto 0;padding:0 20px;}
+  .panel.active{display:block;}
+  .card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:28px 26px;margin-bottom:20px;}
+
+  .shape{background:var(--shape-bg);border-radius:14px;padding:18px 20px;margin:16px 0 20px;display:flex;align-items:center;gap:16px;}
+  .shape .icon{font-size:34px;flex-shrink:0;}
+  .shape .label{font-weight:700;color:var(--shape-color);font-family:'Baloo 2',sans-serif;font-size:15.5px;}
+  .shape .sub{font-size:13px;color:var(--ink-soft);margin-top:2px;}
+
+  .formula{display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:var(--accent-bg,#faf7fb);border-radius:14px;padding:16px 18px;margin:18px 0 4px;}
+  .formula .chip{background:#fff;border:2px solid var(--line);border-radius:10px;padding:6px 12px;font-weight:700;font-family:'Noto Sans JP',sans-serif;}
+  .formula .result{margin-left:auto;font-family:'Noto Sans JP',sans-serif;font-weight:800;font-size:20px;color:var(--accent-color);background:#fff;padding:8px 18px;border-radius:12px;border:2px solid var(--accent-color);}
+
+  .note{border-left:4px solid var(--accent-color);background:var(--accent-bg,#faf7fb);border-radius:0 12px 12px 0;padding:12px 16px;margin:14px 0;font-size:14.5px;}
+
+  .example{border:2px solid var(--line);border-radius:16px;padding:16px 18px;margin-bottom:12px;cursor:pointer;}
+  .example:hover{border-color:var(--accent-color);}
+  .example .jpline{font-family:'Noto Sans JP',sans-serif;font-size:17px;}
+  .example .hl{padding:1px 5px;border-radius:5px;font-weight:700;color:#fff;background:var(--accent-color);}
+  .example .romaji{font-size:13px;color:var(--ink-soft);font-style:italic;margin-top:6px;}
+  .example .reveal{max-height:0;overflow:hidden;transition:max-height .3s ease;}
+  .example.open .reveal{max-height:120px;margin-top:10px;}
+  .example .tap{font-size:11.5px;color:var(--ink-soft);opacity:.7;margin-top:4px;}
+
+  .compare-card{border-radius:16px;padding:18px 20px;margin-bottom:14px;background:#faf8fc;border:2px solid var(--line);}
+  .compare-card h3{margin-top:0;}
+  .pair{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px;}
+  .pair .side{border-radius:12px;padding:12px 14px;}
+  .pair .side.bad{background:#FBE9E9;}
+  .pair .side.good{background:#E6F5EC;}
+  .pair .mark{font-weight:800;margin-right:4px;}
+  .pair .side.bad .mark{color:#B54444;}
+  .pair .side.good .mark{color:#2C7A4E;}
+  .pair .jp{font-size:15px;}
+  @media (max-width:640px){ .pair{grid-template-columns:1fr;} }
+
+  .qcard{background:var(--card);border-radius:18px;box-shadow:var(--shadow-sm);padding:20px 22px;margin-bottom:16px;border:2px solid var(--line);}
+  .qcard .trans{font-size:13px;color:var(--ink-soft);margin:6px 0 12px;}
+  .opt{font-family:'Noto Sans JP',sans-serif;font-weight:700;border:2px solid var(--line);background:#fff;border-radius:12px;padding:9px 18px;cursor:pointer;margin:4px;}
+  .opt.correct{background:#E6F5EC;border-color:#4CAF7D;color:#2C7A4E;}
+  .opt.wrong{background:#FBE9E9;border-color:#E27676;color:#B54444;}
+  .qexplain{display:none;margin-top:12px;font-size:13.5px;color:var(--ink-soft);background:#faf8fc;border-radius:10px;padding:10px 14px;}
+  .qcard.answered .qexplain{display:block;}
+  #checkBtn,#retryBtn{font-family:'Baloo 2',sans-serif;font-weight:700;background:var(--point-a);color:#fff;border:none;border-radius:14px;padding:14px 34px;cursor:pointer;}
+  #checkBtn:disabled{opacity:.4;cursor:not-allowed;}
+  .score-card{display:none;text-align:center;background:var(--card);border-radius:20px;box-shadow:var(--shadow);padding:30px;margin-top:18px;}
+
+  @media (max-width:640px){ .card{padding:20px 16px;} }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <span class="eyebrow">📘 NGỮ PHÁP N3 — BÀI 03</span>
+  <h1><span class="jp">Aがたい</span> vs <span class="jp">Aにくい</span></h1>
+  <p>Cả hai đều nghĩa "khó A", nhưng <b>がたい</b> nói về cảm xúc/tâm lý — thứ khó thực hiện dù có cố gắng đến đâu — còn <b>にくい</b> nói về năng lực/chức năng — thứ khó thực hiện vì lý do vật lý, kỹ thuật hoặc hoàn cảnh.</p>
+</div>
+
+<div class="tabbar" id="tabbar">
+  <button class="tab-btn active" data-key="a"><span class="jp">Aがたい</span></button>
+  <button class="tab-btn" data-key="b"><span class="jp">Aにくい</span></button>
+</div>
+
+<div class="panel active" id="panel-a" style="--accent-color:var(--point-a)">
+  <div class="card">
+    <h2><span class="jp">Aがたい</span></h2>
+    <div class="shape" style="--shape-bg:var(--point-a-bg); --shape-color:var(--point-a)">
+      <div class="icon">❤️🔒</div>
+      <div>
+        <div class="label">Cảm xúc · Tâm lý · Nội tâm</div>
+        <div class="sub">Muốn làm nhưng đơn giản là không thể — dù cố gắng thế nào.</div>
+      </div>
+    </div>
+    <p>Nhấn mạnh rằng <b>dù có cố gắng thì việc A cũng không dễ dàng thực hiện được</b>. Thường dùng với những việc mang tính trừu tượng, tâm tình, cảm xúc — như tin tưởng, chịu đựng, quên, chia lìa, giải thích một điều mơ hồ...</p>
+    <div class="formula" style="--accent-bg:var(--point-a-bg)">
+      <span class="chip jp">動詞ます形</span><span class="result jp">＋ がたい</span>
+    </div>
+    <div class="note">
+      💡 Nếu điều khó khăn nằm ở <b>kỹ năng hay thao tác cụ thể</b> (ví dụ "chưa quen cách dùng đũa") thì <b>không</b> dùng がたい — vì đó là chuyện có thể luyện tập để làm được, không phải chuyện tâm tình.
+    </div>
+  </div>
+  <div id="examples-a"></div>
+</div>
+
+<div class="panel" id="panel-b" style="--accent-color:var(--point-b)">
+  <div class="card">
+    <h2><span class="jp">Aにくい</span></h2>
+    <div class="shape" style="--shape-bg:var(--point-b-bg); --shape-color:var(--point-b)">
+      <div class="icon">⚙️🚧</div>
+      <div>
+        <div class="label">Năng lực · Chức năng · Hoàn cảnh</div>
+        <div class="sub">Cố gắng thì vẫn làm được, nhưng khó — vì lý do vật lý/kỹ thuật.</div>
+      </div>
+    </div>
+    <p>Dùng khi <b>nghĩ rằng "nếu cố làm A thì làm được, nhưng làm A lại khó"</b>. Đối lập với「Aやすい」(dễ làm A). Ngoài ra,「Aにくい」còn mang thêm nghĩa "làm A cảm thấy <b>không thoải mái</b>", chứ không hẳn là bất khả thi.</p>
+    <div class="formula" style="--accent-bg:var(--point-b-bg)">
+      <span class="chip jp">動詞ます形</span><span class="result jp">＋ にくい</span>
+    </div>
+    <div class="note">
+      💡 Ví dụ trong bài: 8 chưa quen cách dùng đũa nên nghĩ "chắc dùng đũa khó lắm" → <span class="jp">使いにくそう</span> là đúng, vì đây là chuyện về <b>kỹ năng thao tác</b>, không phải cảm xúc.
+    </div>
+  </div>
+  <div id="examples-b"></div>
+
+  <div class="compare-card">
+    <h3>So sánh trực tiếp</h3>
+    <p>Cùng một động từ nhưng đi với がたい hay にくい lại cho ra câu đúng/sai khác nhau, tùy vào việc đó thuộc phạm trù cảm xúc hay chức năng:</p>
+
+    <div class="pair">
+      <div class="side bad"><span class="mark">✕</span><span class="jp">開けがたい</span></div>
+      <div class="side good"><span class="mark">○</span><span class="jp">開けにくい</span></div>
+    </div>
+    <p style="font-size:13.5px;color:var(--ink-soft);margin:8px 0 16px;">Mở nắp là thao tác vật lý (chức năng) → chỉ にくい đúng, không phải chuyện tâm tình.</p>
+
+    <div class="pair">
+      <div class="side good"><span class="mark">○</span><span class="jp">耐えがたい苦しみ</span></div>
+      <div class="side bad"><span class="mark">✕</span><span class="jp">耐えにくい苦しみ</span></div>
+    </div>
+    <p style="font-size:13.5px;color:var(--ink-soft);margin:8px 0 16px;">"Chịu đựng nỗi khổ" là chuyện tâm lý/cảm xúc → chỉ がたい đúng.</p>
+
+    <div class="pair">
+      <div class="side good"><span class="mark">○</span><span class="jp">信じがたい話</span></div>
+      <div class="side bad"><span class="mark">✕</span><span class="jp">信じにくい話</span></div>
+    </div>
+    <p style="font-size:13.5px;color:var(--ink-soft);margin:8px 0;">"Khó tin" là cảm giác nội tâm khi nghe chuyện → がたい.</p>
+  </div>
+</div>
+
+<div class="wrap" style="margin-top:56px;">
+  <div style="text-align:center;margin-bottom:22px;"><h2>📝 Luyện tập nhanh</h2></div>
+  <div id="quiz"></div>
+  <div style="text-align:center;"><button id="checkBtn">Chấm điểm</button></div>
+  <div class="score-card" id="scoreCard">
+    <div id="scoreNum" style="font-family:'Baloo 2',sans-serif;font-size:52px;font-weight:800;color:var(--point-a);">0/0</div>
+    <p id="scoreMsg"></p>
+    <button id="retryBtn">Làm lại</button>
+  </div>
+</div>
+
+<script>
+const examples = {
+  a: [
+    { jp:["なぜ彼女がそんなことをしたのか、","わかりません。説明し",""], hl:"がたい", jp2:["なぜ彼女がそんなことをしたのか、わかりません。説明し","がたい","です。"], romaji:"Naze kanojo ga sonna koto o shita no ka wakarimasen. Setsumei shigatai desu.", vn:"Tôi không hiểu tại sao cô ấy lại làm chuyện đó. Thật khó giải thích." },
+    { jp2:["耐え","がたい","苦しみでした。"], romaji:"Taegatai kurushimi deshita.", vn:"Đó là một nỗi khổ khó có thể chịu đựng nổi." },
+    { jp2:["故郷は離れ","がたい","ものです。"], romaji:"Kokyou wa hanaregatai mono desu.", vn:"Quê hương là nơi khó lòng rời xa." },
+    { jp2:["それは信じ","がたい","話ですね。"], romaji:"Sore wa shinjigatai hanashi desu ne.", vn:"Đó quả là một câu chuyện khó tin." }
+  ],
+  b: [
+    { jp2:["8「1は箸の使い方に慣れていないので、使い","にくそう","ですね」"], romaji:"1 wa hashi no tsukaikata ni narete inai node, tsukainikusou desu ne.", vn:"Vì 1 chưa quen cách dùng đũa, nên chắc là dùng khó đấy nhỉ." },
+    { jp2:["この漢字は複雑すぎるから、電話では説明し","にくい","。"], romaji:"Kono kanji wa fukuzatsu sugiru kara, denwa dewa setsumei shinikui.", vn:"Chữ Hán này quá phức tạp nên khó giải thích qua điện thoại." },
+    { jp2:["発音し","にくい","←→発音しやすい"], romaji:"Hatsuon shinikui ←→ hatsuon shiyasui", vn:"Khó phát âm ←→ dễ phát âm." },
+    { jp2:["この椅子は硬くて座り","にくい","。"], romaji:"Kono isu wa katakute suwarinikui.", vn:"Cái ghế này cứng nên ngồi không thoải mái." }
+  ]
+};
+
+function renderExamples(key, containerId){
+  const container = document.getElementById(containerId);
+  examples[key].forEach((ex, i) => {
+    const div = document.createElement('div');
+    div.className = 'example';
+    div.innerHTML = `
+      <div class="jpline"><b>${i+1}.</b> ${ex.jp2[0]}<span class="hl jp">${ex.jp2[1]}</span>${ex.jp2[2]}</div>
+      <div class="romaji">${ex.romaji}</div>
+      <div class="tap">👆 Chạm để xem nghĩa</div>
+      <div class="reveal"><p>🇻🇳 ${ex.vn}</p></div>
+    `;
+    div.addEventListener('click', () => div.classList.toggle('open'));
+    container.appendChild(div);
+  });
+}
+renderExamples('a','examples-a');
+renderExamples('b','examples-b');
+
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('panel-'+btn.dataset.key).classList.add('active');
+  });
+});
+
+const quizData = [
+  { before:"このふた、開け", after:"。", trans:"Nắp này khó mở.", options:["がたい","にくい"], answer:"にくい", explain:"Mở nắp là thao tác vật lý cụ thể (chức năng), không phải chuyện cảm xúc → dùng にくい." },
+  { before:"なぜ彼女がそんなことをしたのか、", after:"説明____です。", trans:"Không hiểu tại sao cô ấy làm vậy, thật khó giải thích.", options:["がたい","にくい"], answer:"がたい", explain:"Đây là cảm giác không thể hiểu/lý giải về mặt tâm lý, không phải vấn đề kỹ thuật → dùng がたい." },
+  { before:"わかり", after:"説明でした。", trans:"Đó là một bài giải thích khó hiểu.", options:["がたい","にくい"], answer:"にくい", explain:"「わかりにくい説明」nói về chất lượng/cách trình bày của bài giải thích (chức năng truyền đạt) → にくい, không phải がたい." },
+  { before:"耐え", after:"苦しみでした。", trans:"Đó là nỗi khổ khó lòng chịu đựng.", options:["がたい","にくい"], answer:"がたい", explain:"Chịu đựng nỗi khổ là trải nghiệm nội tâm/cảm xúc mãnh liệt → がたい." },
+  { before:"故郷は離れ", after:"ものです。", trans:"Quê hương là nơi khó rời xa.", options:["がたい","にくい"], answer:"がたい", explain:"Sự gắn bó với quê hương là tình cảm, không phải năng lực hay kỹ thuật → がたい." },
+  { before:"それは信じ", after:"話ですね。", trans:"Đó là một câu chuyện khó tin.", options:["がたい","にくい"], answer:"がたい", explain:"“Khó tin” là cảm giác hoài nghi trong lòng người nghe → がたい." },
+  { before:"この漢字は複雑すぎるから、電話では説明し", after:"。", trans:"Chữ Hán này quá phức tạp nên khó giải thích qua điện thoại.", options:["がたい","にくい"], answer:"にくい", explain:"Khó khăn nằm ở hoàn cảnh giao tiếp (qua điện thoại) và độ phức tạp của chữ, mang tính chức năng → にくい." },
+  { before:"この椅子は硬くて座り", after:"。", trans:"Cái ghế này cứng nên ngồi không thoải mái.", options:["がたい","にくい"], answer:"にくい", explain:"Đây là nghĩa “làm A cảm thấy không thoải mái” — nghĩa riêng chỉ có ở にくい, không có ở がたい." }
+];
+const quizEl = document.getElementById('quiz');
+const state = new Array(quizData.length).fill(null);
+
+function buildQuiz(){
+  quizEl.innerHTML = '';
+  state.fill(null);
+  quizData.forEach((q, i) => {
+    const card = document.createElement('div');
+    card.className = 'qcard';
+    card.innerHTML = `
+      <div class="jp">${q.before}<span style="border-bottom:3px dotted #c9c1d1;display:inline-block;min-width:60px;"></span>${q.after}</div>
+      <div class="trans">🇻🇳 ${q.trans}</div>
+      <div>${q.options.map(o => `<button class="opt jp" data-val="${o}">${o}</button>`).join('')}</div>
+      <div class="qexplain">${q.explain}</div>
+    `;
+    card.querySelectorAll('.opt').forEach(btn => {
+      btn.addEventListener('click', () => {
+        if(state[i] !== null) return;
+        state[i] = btn.dataset.val;
+        card.classList.add('answered');
+        card.querySelectorAll('.opt').forEach(b => {
+          b.disabled = true;
+          if(b.dataset.val === q.answer) b.classList.add('correct');
+          else if(b === btn) b.classList.add('wrong');
+        });
+        document.getElementById('checkBtn').disabled = !state.every(s => s !== null);
+      });
+    });
+    quizEl.appendChild(card);
+  });
+}
+buildQuiz();
+document.getElementById('checkBtn').disabled = true;
+
+document.getElementById('checkBtn').addEventListener('click', () => {
+  let score = 0;
+  quizData.forEach((q,i) => { if(state[i] === q.answer) score++; });
+  document.getElementById('scoreNum').textContent = score + '/' + quizData.length;
+  document.getElementById('scoreMsg').textContent =
+    score === quizData.length ? "Hoàn hảo! 🎉" :
+    score >= quizData.length - 2 ? "Rất tốt, chỉ còn vài chỗ cần ôn lại." :
+    "Xem lại phần giải thích rồi thử lại nhé!";
+  document.getElementById('scoreCard').style.display = 'block';
+  document.getElementById('checkBtn').style.display = 'none';
+});
+document.getElementById('retryBtn').addEventListener('click', () => {
+  document.getElementById('scoreCard').style.display = 'none';
+  document.getElementById('checkBtn').style.display = 'inline-block';
+  document.getElementById('checkBtn').disabled = true;
+  buildQuiz();
+});
+</script>
+</body>
+</html>
