@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A向きだ・A向けだ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Be+Vietnam+Pro:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#FBF7F2; --card:#FFFFFF; --ink:#2E2A33; --ink-soft:#756E7E; --line:#EDE4EE;
+    --point-a:#2A9D8F; --point-a-bg:#E6F5F2;
+    --point-b:#E76F51; --point-b-bg:#FDECE6;
+    --shadow:0 10px 30px -12px rgba(46,42,51,.16);
+    --shadow-sm:0 4px 14px -6px rgba(46,42,51,.14);
+    --radius:20px;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:radial-gradient(circle at 8% 0%,#f3e9f6 0%,transparent 45%),radial-gradient(circle at 100% 10%,#eaf5ef 0%,transparent 40%),var(--bg);color:var(--ink);font-family:'Be Vietnam Pro',sans-serif;line-height:1.65;padding-bottom:60px;}
+  .jp{font-family:'Noto Sans JP',sans-serif;}
+  h1,h2,h3{font-family:'Baloo 2',sans-serif;}
+  .wrap{max-width:900px;margin:0 auto;padding:0 20px;}
+
+  .hero{max-width:900px;margin:0 auto;padding:48px 20px 20px;text-align:center;}
+  .hero .eyebrow{display:inline-flex;gap:8px;font-size:13px;font-weight:700;letter-spacing:.06em;color:var(--point-b);background:var(--point-b-bg);padding:6px 14px;border-radius:999px;margin-bottom:18px;}
+  .hero h1{font-size:clamp(28px,5vw,42px);font-weight:800;margin:0 0 10px;}
+  .hero p{color:var(--ink-soft);max-width:600px;margin:0 auto;}
+
+  .tabbar{max-width:900px;margin:40px auto 0;padding:0 20px;display:grid;grid-template-columns:repeat(2,1fr);gap:10px;}
+  .tab-btn{border:2px solid var(--line);background:var(--card);border-radius:16px;padding:12px 8px;cursor:pointer;text-align:center;transition:.15s;font-size:18px;}
+  .tab-btn:hover{transform:translateY(-3px);box-shadow:var(--shadow-sm);}
+  .tab-btn.active{border-color:var(--accent);background:var(--accent-bg);box-shadow:var(--shadow-sm);}
+  .tab-btn[data-key="a"]{--accent:var(--point-a);--accent-bg:var(--point-a-bg);}
+  .tab-btn[data-key="b"]{--accent:var(--point-b);--accent-bg:var(--point-b-bg);}
+
+  .panel{display:none;max-width:900px;margin:26px auto 0;padding:0 20px;}
+  .panel.active{display:block;}
+  .card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:28px 26px;margin-bottom:20px;}
+
+  .fitshape{background:var(--shape-bg);border-radius:14px;padding:18px 20px;margin:16px 0 20px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
+  .fitshape .chip2{background:#fff;border-radius:999px;padding:8px 16px;font-weight:700;font-size:14px;display:flex;align-items:center;gap:6px;box-shadow:0 2px 8px -3px rgba(0,0,0,.15);}
+  .fitshape .chip2.main{border:2px solid var(--shape-color);color:var(--shape-color);}
+  .fitshape .chip2.also{border:2px dashed #c9c1d1;color:var(--ink-soft);}
+  .fitshape .chip2.no{border:2px dashed #e2a3a3;color:#b5595c;text-decoration:line-through;opacity:.75;}
+  .fitcaption{text-align:center;font-size:12.5px;color:var(--ink-soft);margin-top:8px;}
+
+  .formula{display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:var(--accent-bg,#faf7fb);border-radius:14px;padding:16px 18px;margin:18px 0 4px;}
+  .formula .chip{background:#fff;border:2px solid var(--line);border-radius:10px;padding:6px 12px;font-weight:700;font-family:'Noto Sans JP',sans-serif;}
+  .formula .result{margin-left:auto;font-family:'Noto Sans JP',sans-serif;font-weight:800;font-size:22px;color:var(--accent-color);background:#fff;padding:8px 18px;border-radius:12px;border:2px solid var(--accent-color);}
+
+  .example{border:2px solid var(--line);border-radius:16px;padding:16px 18px;margin-bottom:12px;cursor:pointer;}
+  .example:hover{border-color:var(--accent-color);}
+  .example .jpline{font-family:'Noto Sans JP',sans-serif;font-size:17px;}
+  .example .hl{padding:1px 3px;border-radius:5px;font-weight:700;}
+  .example .romaji{font-size:13px;color:var(--ink-soft);font-style:italic;margin-top:6px;}
+  .example .reveal{max-height:0;overflow:hidden;transition:max-height .3s ease;}
+  .example.open .reveal{max-height:120px;margin-top:10px;}
+  .example .taphint{font-size:11.5px;color:#b3abbf;margin-top:4px;}
+
+  .compare-card{border-radius:16px;padding:18px 20px;margin-bottom:14px;background:#faf8fc;border:2px solid var(--line);}
+  .compare-pair{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px;}
+  .compare-pair .pbox{border-radius:12px;padding:12px 14px;font-size:14px;}
+  .compare-pair .pbox.a{background:var(--point-a-bg);}
+  .compare-pair .pbox.b{background:var(--point-b-bg);}
+  .compare-pair .jp{font-size:15.5px;}
+  @media (max-width:640px){ .compare-pair{grid-template-columns:1fr;} }
+
+  .qcard{background:var(--card);border-radius:18px;box-shadow:var(--shadow-sm);padding:20px 22px;margin-bottom:16px;border:2px solid var(--line);}
+  .opt{font-family:'Noto Sans JP',sans-serif;font-weight:700;border:2px solid var(--line);background:#fff;border-radius:12px;padding:9px 18px;cursor:pointer;margin:4px;}
+  .opt.correct{background:#E6F5EC;border-color:#4CAF7D;color:#2C7A4E;}
+  .opt.wrong{background:#FBE9E9;border-color:#E27676;color:#B54444;}
+  .qexplain{display:none;margin-top:12px;font-size:13.5px;color:var(--ink-soft);background:#faf8fc;border-radius:10px;padding:10px 14px;}
+  .qcard.answered .qexplain{display:block;}
+  #checkBtn,#retryBtn{font-family:'Baloo 2',sans-serif;font-weight:700;background:var(--point-b);color:#fff;border:none;border-radius:14px;padding:14px 34px;cursor:pointer;}
+  #checkBtn:disabled{opacity:.5;cursor:not-allowed;}
+  .score-card{display:none;text-align:center;background:var(--card);border-radius:20px;box-shadow:var(--shadow);padding:30px;margin-top:18px;}
+
+  @media (max-width:640px){ .card{padding:20px 16px;} }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <span class="eyebrow">📘 NGỮ PHÁP N3</span>
+  <h1><span class="jp">A向きだ</span> ・ <span class="jp">A向けだ</span></h1>
+  <p>Cả hai đều nói "hợp với A" — nhưng một bên chỉ là <b>tình cờ phù hợp</b>, còn bên kia là <b>cố ý tạo ra riêng cho A</b>, người khác không dùng được.</p>
+</div>
+
+<div class="tabbar" id="tabbar">
+  <button class="tab-btn active" data-key="a"><span class="jp">A向きだ</span></button>
+  <button class="tab-btn" data-key="b"><span class="jp">A向けだ</span></button>
+</div>
+
+<div class="panel active" id="panel-a" style="--accent-color:var(--point-a)">
+  <div class="card">
+    <h2><span class="jp">A向きだ</span> — phù hợp với A (nhưng không chỉ riêng A)</h2>
+    <div class="fitshape" style="--shape-bg:var(--point-a-bg); --shape-color:var(--point-a)">
+      <span class="chip2 main">👩 Nữ giới ✓ hợp</span>
+      <span class="chip2 also">🧑 Nam giới cũng ổn</span>
+      <span class="chip2 also">🧓 Người khác cũng dùng được</span>
+    </div>
+    <p class="fitcaption">Không ai "thiết kế riêng" — chỉ là tính chất của A tình cờ vừa vặn, đối tượng khác vẫn dùng bình thường.</p>
+    <p>Nghĩa là "vừa vặn với A", "phù hợp với A", "đáp ứng đúng nhu cầu của A" — nhưng <b>không có ý đồ</b> tạo ra dành riêng cho A. A phù hợp, nhưng những đối tượng khác cũng có thể phù hợp hoặc sử dụng được, không bị loại trừ.</p>
+    <div class="formula" style="--accent-bg:var(--point-a-bg)">
+      <span class="chip jp">名詞</span><span class="result jp">＋ 向きだ</span>
+    </div>
+  </div>
+  <div id="examples-a"></div>
+</div>
+
+<div class="panel" id="panel-b" style="--accent-color:var(--point-b)">
+  <div class="card">
+    <h2><span class="jp">A向けだ</span> — được làm ra dành riêng cho A</h2>
+    <div class="fitshape" style="--shape-bg:var(--point-b-bg); --shape-color:var(--point-b)">
+      <span class="chip2 main">👩 Nữ độc thân ✓ dành riêng</span>
+      <span class="chip2 no">🧑 Nam giới ✗</span>
+      <span class="chip2 no">🧓 Đối tượng khác ✗</span>
+    </div>
+    <p class="fitcaption">Có "ý đồ" ngay từ đầu: sản phẩm/dịch vụ được tạo ra chỉ nhắm tới A — đối tượng khác không phải mục tiêu, thường không dùng được.</p>
+    <p>Nghĩa là "được tạo ra đặc biệt cho A", "làm ra vì mục đích dành cho A". Vì A là đối tượng duy nhất được nhắm tới ngay từ khi tạo ra, nên <b>đối tượng ngoài A thường không phù hợp hoặc không được phép sử dụng</b>.</p>
+    <div class="formula" style="--accent-bg:var(--point-b-bg)">
+      <span class="chip jp">名詞</span><span class="result jp">＋ 向けだ</span>
+    </div>
+  </div>
+  <div id="examples-b"></div>
+
+  <div class="compare-card">
+    <h3><span class="jp">向きだ</span> vs <span class="jp">向けだ</span> — khác nhau ở "ý đồ"</h3>
+    <p><span class="jp">向きだ</span> = tình cờ phù hợp, không loại trừ ai. <span class="jp">向けだ</span> = cố ý tạo riêng cho A, người ngoài A thường không dùng được.</p>
+    <div class="compare-pair">
+      <div class="pbox a">
+        <div class="jp">「マンション青木」は<span class="hl" style="background:var(--point-a-bg);color:var(--point-a);">女性向き</span>です。</div>
+        <p style="margin:6px 0 0;">An toàn nên hợp cho nữ ở, nhưng nam giới ở cũng chẳng sao — không ai bị cấm.</p>
+      </div>
+      <div class="pbox b">
+        <div class="jp">「グリーンパレス」は独身<span class="hl" style="background:var(--point-b-bg);color:var(--point-b);">女性向け</span>です。</div>
+        <p style="margin:6px 0 0;">Được xây riêng cho nữ độc thân — người khác không được ở đây.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="wrap" style="margin-top:56px;">
+  <div style="text-align:center;margin-bottom:22px;"><h2>📝 Luyện tập nhanh</h2></div>
+  <div id="quiz"></div>
+  <div style="text-align:center;"><button id="checkBtn">Chấm điểm</button></div>
+  <div class="score-card" id="scoreCard">
+    <div id="scoreNum" style="font-family:'Baloo 2',sans-serif;font-size:52px;font-weight:800;color:var(--point-b);">0/0</div>
+    <p id="scoreMsg"></p>
+    <button id="retryBtn">Làm lại</button>
+  </div>
+</div>
+
+<script>
+const examples = {
+  a: [
+    { jp:["量が少ないので、女性","向き","です。"], romaji:"Ryō ga sukunai node, josei-muki desu.", vn:"Vì khẩu phần ít nên món này hợp với phụ nữ (nam giới ăn cũng không sao)." },
+    { jp:["「マンション青木」もセキュリティがしっかりしているので、女性","向き","ですよ。"], romaji:"Manshon Aoki mo sekyuriti ga shikkari shiteiru node, josei-muki desu yo.", vn:"Chung cư Aoki cũng có bảo mật chắc chắn nên hợp cho phụ nữ ở (nam giới ở cũng được)." },
+    { jp:["この靴は歩きやすいので、初心者","向き","です。"], romaji:"Kono kutsu wa arukiyasui node, shoshinsha-muki desu.", vn:"Đôi giày này dễ đi nên hợp với người mới bắt đầu, nhưng người có kinh nghiệm đi cũng ổn." },
+    { jp:["このアパートは駅から近いので、会社員","向き","です。"], romaji:"Kono apāto wa eki kara chikai node, kaishain-muki desu.", vn:"Căn hộ này gần ga nên hợp với dân văn phòng, nhưng ai ở cũng tiện cả." }
+  ],
+  b: [
+    { jp:["女性","向け","に、カロリーが控えめです。"], romaji:"Josei-muke ni, karorī ga hikaeme desu.", vn:"Được làm dành riêng cho phụ nữ, nên lượng calo được giảm bớt." },
+    { jp:["「グリーンパレス」は独身女性","向け","のマンションです。"], romaji:"Gurīn Paresu wa dokushin josei-muke no manshon desu.", vn:"Green Palace là chung cư được xây dành riêng cho phụ nữ độc thân, người khác không được ở." },
+    { jp:["この教科書は初心者","向け","に作られています。"], romaji:"Kono kyōkasho wa shoshinsha-muke ni tsukurarete imasu.", vn:"Cuốn sách giáo khoa này được biên soạn dành riêng cho người mới học." },
+    { jp:["この製品は子供","向け","に開発されました。"], romaji:"Kono seihin wa kodomo-muke ni kaihatsu saremashita.", vn:"Sản phẩm này được phát triển dành riêng cho trẻ em, người lớn không phải đối tượng sử dụng." }
+  ]
+};
+
+function renderExamples(key, containerId){
+  const container = document.getElementById(containerId);
+  examples[key].forEach((ex, i) => {
+    const div = document.createElement('div');
+    div.className = 'example';
+    div.innerHTML = `
+      <div class="jpline"><b>${i+1}.</b> ${ex.jp[0]}<span class="hl jp">${ex.jp[1]}</span>${ex.jp[2]}</div>
+      <div class="romaji">${ex.romaji}</div>
+      <div class="taphint">👆 chạm để xem nghĩa</div>
+      <div class="reveal"><p>🇻🇳 ${ex.vn}</p></div>
+    `;
+    div.addEventListener('click', () => div.classList.toggle('open'));
+    container.appendChild(div);
+  });
+}
+renderExamples('a','examples-a');
+renderExamples('b','examples-b');
+
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('panel-'+btn.dataset.key).classList.add('active');
+  });
+});
+
+const quizData = [
+  { before:"このアプリは高齢者", after:"に開発されており、他の年齢層は対象外です。",
+    trans:"Ứng dụng này được phát triển dành riêng cho người cao tuổi, các độ tuổi khác không phải đối tượng.",
+    options:["向き","向け"], answer:"向け",
+    explain:"「他の年齢層は対象外」(các độ tuổi khác không phải đối tượng) cho thấy chỉ dành riêng cho người cao tuổi → dùng 向け." },
+  { before:"この料理は辛くないので、子供にも", after:"です。大人が食べてもおいしいですよ。",
+    trans:"Món này không cay nên hợp cả với trẻ em. Người lớn ăn cũng ngon.",
+    options:["向き","向け"], answer:"向き",
+    explain:"「大人が食べてもおいしい」cho thấy không giới hạn chỉ trẻ em, ai ăn cũng được → dùng 向き." },
+  { before:"この靴は登山", after:"に作られていて、普段履きには向いていません。",
+    trans:"Đôi giày này được làm riêng để leo núi, không hợp để đi thường ngày.",
+    options:["向き","向け"], answer:"向け",
+    explain:"「作られていて」+「普段履きには向いていません」cho thấy có mục đích riêng, không dùng cho việc khác được → 向け." },
+  { before:"この部屋は静かなので、勉強", after:"です。",
+    trans:"Phòng này yên tĩnh nên phù hợp để học.",
+    options:["向き","向け"], answer:"向き",
+    explain:"Câu chỉ nói phòng tình cờ phù hợp để học nhờ yên tĩnh, không có ý xây riêng cho việc học → 向き." },
+  { before:"このシャンプーは敏感肌", after:"に開発された商品で、他の肌質には合わない場合があります。",
+    trans:"Loại dầu gội này được phát triển dành riêng cho da nhạy cảm, có thể không hợp với các loại da khác.",
+    options:["向き","向け"], answer:"向け",
+    explain:"「開発された」+「他の肌質には合わない」cho thấy được tạo ra chỉ nhắm tới da nhạy cảm → 向け." },
+  { before:"この公園は広くて安全なので、子供", after:"ですが、大人も散歩に来ます。",
+    trans:"Công viên này rộng và an toàn nên hợp với trẻ em, nhưng người lớn cũng đến dạo.",
+    options:["向き","向け"], answer:"向き",
+    explain:"「大人も散歩に来ます」cho thấy không giới hạn chỉ trẻ em sử dụng → 向き." },
+  { before:"この講座は上級者", after:"の内容なので、初心者は理解できません。",
+    trans:"Khóa học này là nội dung dành riêng cho người trình độ cao nên người mới không thể hiểu được.",
+    options:["向き","向け"], answer:"向け",
+    explain:"「初心者は理解できません」cho thấy nội dung chỉ nhắm tới người trình độ cao, loại trừ người mới → 向け." },
+  { before:"この色は明るいので、若い人", after:"だと思います。年配の方が着てもすてきですよ。",
+    trans:"Màu này tươi sáng nên tôi nghĩ hợp với người trẻ. Người lớn tuổi mặc cũng đẹp.",
+    options:["向き","向け"], answer:"向き",
+    explain:"「年配の方が着てもすてき」cho thấy không giới hạn chỉ người trẻ mặc được → 向き." }
+];
+const quizEl = document.getElementById('quiz');
+const state = new Array(quizData.length).fill(null);
+
+function buildQuiz(){
+  quizEl.innerHTML = '';
+  state.fill(null);
+  quizData.forEach((q, i) => {
+    const card = document.createElement('div');
+    card.className = 'qcard';
+    card.innerHTML = `
+      <div class="jp">${q.before}<span style="border-bottom:3px dotted #c9c1d1;display:inline-block;min-width:60px;"></span>${q.after}</div>
+      <div style="font-size:13px;color:var(--ink-soft);margin:6px 0 12px;">${q.trans}</div>
+      <div>${q.options.map(o => `<button class="opt jp" data-val="${o}">${o}</button>`).join('')}</div>
+      <div class="qexplain">${q.explain}</div>
+    `;
+    card.querySelectorAll('.opt').forEach(btn => {
+      btn.addEventListener('click', () => {
+        if(state[i] !== null) return;
+        state[i] = btn.dataset.val;
+        card.classList.add('answered');
+        card.querySelectorAll('.opt').forEach(b => {
+          b.disabled = true;
+          if(b.dataset.val === q.answer) b.classList.add('correct');
+          else if(b === btn) b.classList.add('wrong');
+        });
+        document.getElementById('checkBtn').disabled = !state.every(s => s !== null);
+      });
+    });
+    quizEl.appendChild(card);
+  });
+}
+buildQuiz();
+document.getElementById('checkBtn').disabled = true;
+
+document.getElementById('checkBtn').addEventListener('click', () => {
+  let score = 0;
+  quizData.forEach((q,i) => { if(state[i] === q.answer) score++; });
+  document.getElementById('scoreNum').textContent = score + '/' + quizData.length;
+  document.getElementById('scoreMsg').textContent =
+    score === quizData.length ? "Hoàn hảo! 🎉" :
+    score >= quizData.length - 2 ? "Rất tốt, chỉ còn vài chỗ cần ôn lại." :
+    "Xem lại phần giải thích rồi thử lại nhé!";
+  document.getElementById('scoreCard').style.display = 'block';
+  document.getElementById('checkBtn').style.display = 'none';
+});
+document.getElementById('retryBtn').addEventListener('click', () => {
+  document.getElementById('scoreCard').style.display = 'none';
+  document.getElementById('checkBtn').style.display = 'inline-block';
+  document.getElementById('checkBtn').disabled = true;
+  buildQuiz();
+});
+</script>
+</body>
+</html>
