@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aにくい vs Aづらい</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Be+Vietnam+Pro:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#FBF7F2; --card:#FFFFFF; --ink:#2E2A33; --ink-soft:#756E7E; --line:#EDE4EE;
+    --point-a:#2A7F9E; --point-a-bg:#E4F1F6;   /* にくい: functional / physical -> steady steel blue */
+    --point-b:#E76F51; --point-b-bg:#FDECE6;   /* づらい: emotional / psychological -> warm coral */
+    --shadow:0 10px 30px -12px rgba(46,42,51,.16);
+    --shadow-sm:0 4px 14px -6px rgba(46,42,51,.14);
+    --radius:20px;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:radial-gradient(circle at 8% 0%,#eaf3f6 0%,transparent 45%),radial-gradient(circle at 100% 10%,#fdecea 0%,transparent 40%),var(--bg);color:var(--ink);font-family:'Be Vietnam Pro',sans-serif;line-height:1.65;padding-bottom:60px;}
+  .jp{font-family:'Noto Sans JP',sans-serif;}
+  h1,h2,h3{font-family:'Baloo 2',sans-serif;}
+  .wrap{max-width:900px;margin:0 auto;padding:0 20px;}
+
+  .hero{max-width:900px;margin:0 auto;padding:48px 20px 20px;text-align:center;}
+  .hero .eyebrow{display:inline-flex;gap:8px;font-size:13px;font-weight:700;letter-spacing:.06em;color:var(--point-b);background:var(--point-b-bg);padding:6px 14px;border-radius:999px;margin-bottom:18px;}
+  .hero h1{font-size:clamp(28px,5vw,42px);font-weight:800;margin:0 0 10px;}
+  .hero p{color:var(--ink-soft);max-width:600px;margin:0 auto;}
+
+  .tabbar{max-width:900px;margin:40px auto 0;padding:0 20px;display:grid;grid-template-columns:repeat(2,1fr);gap:10px;}
+  .tab-btn{border:2px solid var(--line);background:var(--card);border-radius:16px;padding:12px 8px;cursor:pointer;text-align:center;transition:.15s;font-family:'Noto Sans JP',sans-serif;font-weight:700;font-size:17px;}
+  .tab-btn:hover{transform:translateY(-3px);box-shadow:var(--shadow-sm);}
+  .tab-btn.active{border-color:var(--accent);background:var(--accent-bg);box-shadow:var(--shadow-sm);}
+  .tab-btn[data-key="a"]{--accent:var(--point-a);--accent-bg:var(--point-a-bg);}
+  .tab-btn[data-key="b"]{--accent:var(--point-b);--accent-bg:var(--point-b-bg);}
+
+  .panel{display:none;max-width:900px;margin:26px auto 0;padding:0 20px;}
+  .panel.active{display:block;}
+  .card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:28px 26px;margin-bottom:20px;}
+  .card h2{margin-top:0;}
+  .tagline{display:inline-block;font-size:13px;font-weight:700;color:var(--accent-color);background:color-mix(in srgb, var(--accent-color) 12%, white);padding:4px 12px;border-radius:999px;margin-bottom:14px;}
+
+  .timeshape{background:var(--shape-bg);border-radius:14px;padding:18px 20px 14px;margin:16px 0 20px;}
+  .timeshape .caption{font-size:12.5px;color:var(--ink-soft);margin-top:8px;text-align:center;}
+  .track{position:relative;height:22px;border-radius:999px;background:#fff;box-shadow:inset 0 0 0 2px var(--line);display:flex;align-items:center;justify-content:center;}
+  .block{width:60%;height:100%;border-radius:999px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:16px;}
+  .actor-track{position:relative;height:22px;border-radius:999px;background:#fff;box-shadow:inset 0 0 0 2px var(--line);}
+  .actor-dot{position:absolute;top:50%;left:14%;width:26px;height:26px;border-radius:50%;transform:translate(-50%,-50%);display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;border:3px solid #fff;}
+  .actor-wave{position:absolute;top:50%;left:34%;right:6%;height:2px;transform:translateY(-50%);background:repeating-linear-gradient(90deg,var(--shape-color) 0 6px,transparent 6px 12px);opacity:.55;}
+
+  .formula{display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:var(--accent-bg,#faf7fb);border-radius:14px;padding:16px 18px;margin:18px 0 4px;}
+  .formula .chip{background:#fff;border:2px solid var(--line);border-radius:10px;padding:6px 12px;font-weight:700;font-family:'Noto Sans JP',sans-serif;}
+  .formula .result{margin-left:auto;font-family:'Noto Sans JP',sans-serif;font-weight:800;font-size:22px;color:var(--accent-color);background:#fff;padding:8px 18px;border-radius:12px;border:2px solid var(--accent-color);}
+
+  .note{border-left:4px solid var(--accent-color);background:var(--accent-bg,#faf7fb);border-radius:0 12px 12px 0;padding:10px 16px;margin:16px 0 4px;font-size:14.5px;}
+
+  .example{border:2px solid var(--line);border-radius:16px;padding:16px 18px;margin-bottom:12px;cursor:pointer;}
+  .example:hover{border-color:var(--accent-color);}
+  .example .jpline{font-family:'Noto Sans JP',sans-serif;font-size:17px;}
+  .example .hl{padding:1px 5px;border-radius:5px;font-weight:700;color:#fff;background:var(--accent-color);}
+  .example .romaji{font-size:13px;color:var(--ink-soft);font-style:italic;margin-top:6px;}
+  .example .reveal{max-height:0;overflow:hidden;transition:max-height .3s ease;}
+  .example.open .reveal{max-height:120px;margin-top:10px;}
+  .taphint{font-size:11.5px;color:var(--ink-soft);opacity:.7;margin-top:4px;}
+
+  .compare-card{border-radius:16px;padding:18px 20px;margin-bottom:14px;background:#faf8fc;border:2px solid var(--line);}
+  .compare-card h3{margin-top:0;}
+  .pairbox{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:12px;}
+  .pairbox .side{border-radius:12px;padding:14px;}
+  .pairbox .side.a{background:var(--point-a-bg);}
+  .pairbox .side.b{background:var(--point-b-bg);}
+  .pairbox .side .jp{font-size:16px;}
+  .pairbox .side .vn{font-size:13px;color:var(--ink-soft);margin-top:8px;}
+  @media (max-width:600px){ .pairbox{grid-template-columns:1fr;} }
+
+  .qcard{background:var(--card);border-radius:18px;box-shadow:var(--shadow-sm);padding:20px 22px;margin-bottom:16px;border:2px solid var(--line);}
+  .opt{font-family:'Noto Sans JP',sans-serif;font-weight:700;border:2px solid var(--line);background:#fff;border-radius:12px;padding:9px 18px;cursor:pointer;margin:4px;}
+  .opt.correct{background:#E6F5EC;border-color:#4CAF7D;color:#2C7A4E;}
+  .opt.wrong{background:#FBE9E9;border-color:#E27676;color:#B54444;}
+  .qexplain{display:none;margin-top:12px;font-size:13.5px;color:var(--ink-soft);background:#faf8fc;border-radius:10px;padding:10px 14px;}
+  .qcard.answered .qexplain{display:block;}
+  #checkBtn,#retryBtn{font-family:'Baloo 2',sans-serif;font-weight:700;background:var(--point-b);color:#fff;border:none;border-radius:14px;padding:14px 34px;cursor:pointer;}
+  #checkBtn:disabled{opacity:.45;cursor:not-allowed;}
+  .score-card{display:none;text-align:center;background:var(--card);border-radius:20px;box-shadow:var(--shadow);padding:30px;margin-top:18px;}
+
+  @media (max-width:640px){ .card{padding:20px 16px;} }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <span class="eyebrow">📘 NGỮ PHÁP N3</span>
+  <h1><span class="jp">Aにくい</span> ・ <span class="jp">Aづらい</span></h1>
+  <p>Cả hai đều nghĩa "khó làm A", nhưng <b>にくい</b> nói về khó khăn <b>khách quan / kỹ thuật</b>, còn <b>づらい</b> nói về sự <b>ngần ngại trong lòng</b> của người thực hiện.</p>
+</div>
+
+<div class="tabbar" id="tabbar">
+  <button class="tab-btn active" data-key="a"><span class="jp">Aにくい</span></button>
+  <button class="tab-btn" data-key="b"><span class="jp">Aづらい</span></button>
+</div>
+
+<!-- ================= PANEL A: にくい ================= -->
+<div class="panel active" id="panel-a" style="--accent-color:var(--point-a)">
+  <div class="card">
+    <span class="tagline">Khó về mặt vật lý / năng lực / kỹ thuật</span>
+    <h2><span class="jp">A + にくい</span></h2>
+
+    <div class="timeshape" style="--shape-bg:var(--point-a-bg); --shape-color:var(--point-a)">
+      <div class="track">
+        <div class="block jp" style="background:var(--point-a);">障害物</div>
+      </div>
+      <div class="caption">Trở ngại nằm ở <b>bản thân đối tượng</b> (đồ vật, hoàn cảnh) — không liên quan cảm xúc của người nói.</div>
+    </div>
+
+    <p>「Aにくい」nghĩa là <b>làm A khó về mặt vật lý (năng lực, kỹ thuật)</b>. Lý do của sự khó khăn này thường nằm ở <b>đối tượng</b> chứ không phải ở tâm lý người thực hiện.</p>
+
+    <div class="formula" style="--accent-bg:var(--point-a-bg)">
+      <span class="chip jp">V-masu</span><span class="result jp">＋ にくい</span>
+    </div>
+
+    <div class="note">
+      Vì mang tính khách quan/kỹ thuật, "にくい" cũng dùng được với <b>động từ vô ý chí</b> (không do con người chủ động), ví dụ: 燃えにくい (khó cháy), 溶けにくい (khó tan) — những thứ づらい không dùng cho trường hợp này.
+    </div>
+  </div>
+  <div id="examples-a"></div>
+</div>
+
+<!-- ================= PANEL B: づらい ================= -->
+<div class="panel" id="panel-b" style="--accent-color:var(--point-b)">
+  <div class="card">
+    <span class="tagline">Khó về mặt cảm xúc / tâm lý</span>
+    <h2><span class="jp">A + づらい</span></h2>
+
+    <div class="timeshape" style="--shape-bg:var(--point-b-bg); --shape-color:var(--point-b)">
+      <div class="actor-track">
+        <div class="actor-dot jp" style="background:var(--point-b);">😟</div>
+        <div class="actor-wave"></div>
+      </div>
+      <div class="caption">Sự ngần ngại nằm ở <b>phía người thực hiện hành động A</b> — có gì đó cản trở trong lòng.</div>
+    </div>
+
+    <p>「Aづらい」nghĩa là <b>có sự phản kháng/ngần ngại tâm lý khiến khó làm A</b>. Lý do thường nằm ở phía <b>người thực hiện hành động</b>, hay dùng khi có cảm giác e ngại, áy náy, không nỡ...</p>
+
+    <div class="formula" style="--accent-bg:var(--point-b-bg)">
+      <span class="chip jp">V-masu</span><span class="result jp">＋ づらい</span>
+    </div>
+
+    <div class="note">
+      "づらい" thường <b>không</b> dùng với động từ vô ý chí, <b>trừ</b> 3 động từ: <span class="jp">見える・聞こえる・わかる</span> (nhìn thấy, nghe thấy, hiểu) — ví dụ: わかりづらい説明 (lời giải thích khó hiểu), 聞こえづらい (khó nghe rõ).
+    </div>
+  </div>
+  <div id="examples-b"></div>
+
+  <!-- Comparison section -->
+  <div class="compare-card">
+    <h3><span class="jp">言いにくい</span> vs <span class="jp">言いづらい</span></h3>
+    <p>Cả hai đều dùng được, nhưng sắc thái khác nhau:</p>
+    <div class="pairbox">
+      <div class="side a">
+        <div class="jp">言い<span class="hl" style="background:var(--point-a)">にくく</span>て…</div>
+        <div class="vn">⇒ Không biết <b>phải nói thế nào</b> cho khéo (khó khăn khi diễn đạt, mang tính kỹ thuật).</div>
+      </div>
+      <div class="side b">
+        <div class="jp">言い<span class="hl" style="background:var(--point-b)">づらく</span>て…</div>
+        <div class="vn">⇒ <b>Thấy tội, không nỡ nói ra</b> (ngần ngại vì thương cảm cho đối phương).</div>
+      </div>
+    </div>
+    <p style="margin-top:14px;">Bối cảnh: hỏi đòi tiền người bạn vừa mất việc — dùng <span class="jp">言いにくくて</span> nếu đơn thuần không biết mở lời sao, dùng <span class="jp">言いづらくて</span> nếu thấy thương và ngại làm người ta buồn thêm.</p>
+  </div>
+</div>
+
+<div class="wrap" style="margin-top:56px;">
+  <div style="text-align:center;margin-bottom:22px;"><h2>📝 Luyện tập nhanh</h2></div>
+  <div id="quiz"></div>
+  <div style="text-align:center;"><button id="checkBtn">Chấm điểm</button></div>
+  <div class="score-card" id="scoreCard">
+    <div id="scoreNum" style="font-family:'Baloo 2',sans-serif;font-size:52px;font-weight:800;color:var(--point-b);">0/0</div>
+    <p id="scoreMsg"></p>
+    <button id="retryBtn">Làm lại</button>
+  </div>
+</div>
+
+<script>
+const examples = {
+  a: [
+    { jp:["このハンバーガー、大きすぎて食べ","にくい","。"], romaji:"Kono hanbaagaa, ookisugite tabenikui.", vn:"Cái hamburger này to quá nên khó ăn. (Lý do nằm ở hamburger, không phải người ăn.)" },
+    { jp:["燃え","にくい","素材のカーテン"], romaji:"Moenikui sozai no kaaten.", vn:"Rèm cửa làm từ chất liệu khó cháy. (Động từ vô ý chí 燃える — chỉ にくい dùng được.)" },
+    { jp:["アイスコーヒーに砂糖を入れても溶け","にくい","。"], romaji:"Aisu koohii ni satou wo iretemo tokenikui.", vn:"Cho đường vào cà phê đá cũng khó tan. (Tính chất vật lý của đường/cà phê lạnh.)" }
+  ],
+  b: [
+    { jp:["子供がほしそうにじっと見ている前で、ケーキは食べ","づらい","。"], romaji:"Kodomo ga hoshisou ni jitto miteiru mae de, keeki wa tabezurai.", vn:"Trước mặt đứa trẻ đang nhìn chằm chằm thèm thuồng, thật khó mà ăn bánh. (Ngại vì cảm giác áy náy, không phải vì khó ăn về mặt vật lý.)" },
+    { jp:["（子犬と別れたくないから）別れ","づらい","よ。"], romaji:"(Koinu to wakaretakunai kara) wakarezurai yo.", vn:"Không nỡ chia tay (với chú chó con). (Sự ngần ngại nằm ở phía người phải chia tay.)" },
+    { jp:["わかり","づらい","説明"], romaji:"Wakarizurai setsumei.", vn:"Lời giải thích khó hiểu. (わかる là 1 trong 3 ngoại lệ động từ vô ý chí đi được với づらい.)" },
+    { jp:["年をとって聞こえ","づらく","なった。"], romaji:"Toshi wo totte kikoezuraku natta.", vn:"Già đi nên nghe khó hơn. (聞こえる cũng là ngoại lệ.)" }
+  ]
+};
+const labelMap = { a:"にくい", b:"づらい" };
+
+function renderExamples(key, containerId){
+  const container = document.getElementById(containerId);
+  examples[key].forEach((ex, i) => {
+    const div = document.createElement('div');
+    div.className = 'example';
+    div.innerHTML = `
+      <div class="jpline"><b>${i+1}.</b> ${ex.jp[0]}<span class="hl jp">${ex.jp[1]}</span>${ex.jp[2]}</div>
+      <div class="romaji">${ex.romaji}</div>
+      <div class="taphint">👆 chạm để xem nghĩa</div>
+      <div class="reveal"><p>🇻🇳 ${ex.vn}</p></div>
+    `;
+    div.addEventListener('click', () => div.classList.toggle('open'));
+    container.appendChild(div);
+  });
+}
+renderExamples('a','examples-a');
+renderExamples('b','examples-b');
+
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('panel-'+btn.dataset.key).classList.add('active');
+  });
+});
+
+const quizData = [
+  { before:"この靴、サイズが合わなくて歩き", after:"。", trans:"🇻🇳 Đôi giày này không đúng size nên khó đi. (Vấn đề nằm ở đôi giày.)",
+    options:["にくい","づらい"], answer:"にくい", explain:"Đôi giày sai kích cỡ là nguyên nhân vật lý/kỹ thuật khiến khó đi — dùng にくい." },
+  { before:"先生が怖くて、質問し", after:"。", trans:"🇻🇳 Vì giáo viên đáng sợ nên khó mà hỏi. (Ngần ngại tâm lý.)",
+    options:["にくい","づらい"], answer:"づらい", explain:"Nỗi sợ là cảm xúc/tâm lý của người hỏi — dùng づらい." },
+  { before:"このペン、インクが出", after:"くて困る。", trans:"🇻🇳 Cây bút này khó ra mực, phiền thật.",
+    options:["にくい","づらい"], answer:"にくい", explain:"Mực khó ra là vấn đề kỹ thuật của cây bút, không liên quan cảm xúc — にくい." },
+  { before:"彼に借りたお金のことを言い", after:"。", trans:"🇻🇳 Khó mà nói ra chuyện tiền đã mượn anh ấy. (Vì thấy áy náy.)",
+    options:["にくい","づらい"], answer:"づらい", explain:"Ngữ cảnh cho thấy sự áy náy/ngại ngùng khi nhắc đến chuyện tiền — づらい." },
+  { before:"この鍵は壊れやすくて、鍵穴に入れ", after:"。", trans:"🇻🇳 Ổ khóa này dễ hỏng nên khó tra chìa vào.",
+    options:["にくい","づらい"], answer:"にくい", explain:"Trở ngại nằm ở chính cái khóa (đối tượng vật lý), không phải cảm xúc — にくい." },
+  { before:"おばあさんは耳が遠くて、声が聞こえ", after:"。", trans:"🇻🇳 Bà bị lãng tai nên khó nghe được giọng nói.",
+    options:["にくい","づらい"], answer:"づらい", explain:"聞こえる là 1 trong 3 ngoại lệ động từ vô ý chí dùng được với づらい (cùng với 見える・わかる)." },
+  { before:"みんなが賛成しているので、一人だけ反対し", after:"。", trans:"🇻🇳 Vì mọi người đều tán thành nên khó mà một mình phản đối.",
+    options:["にくい","づらい"], answer:"づらい", explain:"Áp lực tâm lý khi phải một mình phản đối tập thể — trở ngại nằm ở phía người nói, づらい." },
+  { before:"この紙は厚くて、はさみで切り", after:"。", trans:"🇻🇳 Tờ giấy này dày nên khó cắt bằng kéo.",
+    options:["にくい","づらい"], answer:"にくい", explain:"Độ dày của giấy là nguyên nhân vật lý/kỹ thuật — にくい." }
+];
+const quizEl = document.getElementById('quiz');
+const state = new Array(quizData.length).fill(null);
+
+function buildQuiz(){
+  quizEl.innerHTML = '';
+  state.fill(null);
+  quizData.forEach((q, i) => {
+    const card = document.createElement('div');
+    card.className = 'qcard';
+    card.innerHTML = `
+      <div class="jp">${q.before}<span style="border-bottom:3px dotted #c9c1d1;display:inline-block;min-width:60px;"></span>${q.after}</div>
+      <div style="font-size:13px;color:var(--ink-soft);margin:6px 0 12px;">${q.trans}</div>
+      <div>${q.options.map(o => `<button class="opt jp" data-val="${o}">${o}</button>`).join('')}</div>
+      <div class="qexplain">${q.explain}</div>
+    `;
+    card.querySelectorAll('.opt').forEach(btn => {
+      btn.addEventListener('click', () => {
+        if(state[i] !== null) return;
+        state[i] = btn.dataset.val;
+        card.classList.add('answered');
+        card.querySelectorAll('.opt').forEach(b => {
+          b.disabled = true;
+          if(b.dataset.val === q.answer) b.classList.add('correct');
+          else if(b === btn) b.classList.add('wrong');
+        });
+        document.getElementById('checkBtn').disabled = !state.every(s => s !== null);
+      });
+    });
+    quizEl.appendChild(card);
+  });
+}
+buildQuiz();
+document.getElementById('checkBtn').disabled = true;
+
+document.getElementById('checkBtn').addEventListener('click', () => {
+  let score = 0;
+  quizData.forEach((q,i) => { if(state[i] === q.answer) score++; });
+  document.getElementById('scoreNum').textContent = score + '/' + quizData.length;
+  document.getElementById('scoreMsg').textContent =
+    score === quizData.length ? "Hoàn hảo! 🎉" :
+    score >= quizData.length - 2 ? "Rất tốt, chỉ còn vài chỗ cần ôn lại." :
+    "Xem lại phần giải thích rồi thử lại nhé!";
+  document.getElementById('scoreCard').style.display = 'block';
+  document.getElementById('checkBtn').style.display = 'none';
+});
+document.getElementById('retryBtn').addEventListener('click', () => {
+  document.getElementById('scoreCard').style.display = 'none';
+  document.getElementById('checkBtn').style.display = 'inline-block';
+  document.getElementById('checkBtn').disabled = true;
+  buildQuiz();
+});
+</script>
+</body>
+</html>
