@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aがちだ vs Aぎみ（気味）だ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Be+Vietnam+Pro:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#FBF7F2; --card:#FFFFFF; --ink:#2E2A33; --ink-soft:#756E7E; --line:#EDE4EE;
+    --point-a:#E08E45; --point-a-bg:#FBF0E2;
+    --point-b:#2E9D93; --point-b-bg:#E4F5F2;
+    --shadow:0 10px 30px -12px rgba(46,42,51,.16);
+    --shadow-sm:0 4px 14px -6px rgba(46,42,51,.14);
+    --radius:20px;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:radial-gradient(circle at 8% 0%,#fbeadd 0%,transparent 45%),radial-gradient(circle at 100% 10%,#e2f4f0 0%,transparent 40%),var(--bg);color:var(--ink);font-family:'Be Vietnam Pro',sans-serif;line-height:1.65;padding-bottom:60px;}
+  .jp{font-family:'Noto Sans JP',sans-serif;}
+  h1,h2,h3{font-family:'Baloo 2',sans-serif;}
+  .wrap{max-width:900px;margin:0 auto;padding:0 20px;}
+
+  .hero{max-width:900px;margin:0 auto;padding:48px 20px 20px;text-align:center;}
+  .hero .eyebrow{display:inline-flex;gap:8px;font-size:13px;font-weight:700;letter-spacing:.06em;color:var(--point-b);background:var(--point-b-bg);padding:6px 14px;border-radius:999px;margin-bottom:18px;}
+  .hero h1{font-size:clamp(26px,5vw,40px);font-weight:800;margin:0 0 10px;}
+  .hero p{color:var(--ink-soft);max-width:600px;margin:0 auto;}
+
+  .tabbar{max-width:900px;margin:40px auto 0;padding:0 20px;display:grid;grid-template-columns:repeat(2,1fr);gap:10px;}
+  .tab-btn{border:2px solid var(--line);background:var(--card);border-radius:16px;padding:14px 8px;cursor:pointer;text-align:center;transition:.15s;font-family:'Baloo 2',sans-serif;font-weight:700;}
+  .tab-btn:hover{transform:translateY(-3px);box-shadow:var(--shadow-sm);}
+  .tab-btn.active{border-color:var(--accent);background:var(--accent-bg);box-shadow:var(--shadow-sm);}
+  .tab-btn[data-key="a"]{--accent:var(--point-a);--accent-bg:var(--point-a-bg);}
+  .tab-btn[data-key="b"]{--accent:var(--point-b);--accent-bg:var(--point-b-bg);}
+  .tab-btn .sub{display:block;font-family:'Be Vietnam Pro',sans-serif;font-weight:500;font-size:12px;color:var(--ink-soft);margin-top:2px;}
+
+  .panel{display:none;max-width:900px;margin:26px auto 0;padding:0 20px;}
+  .panel.active{display:block;}
+  .card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:28px 26px;margin-bottom:20px;}
+
+  .timeshape{background:var(--shape-bg);border-radius:14px;padding:18px 20px 14px;margin:16px 0 20px;}
+  .track{position:relative;height:14px;border-radius:999px;background:#fff;box-shadow:inset 0 0 0 2px var(--line);}
+  .track .fill{position:absolute;inset:0;border-radius:999px;}
+  .track .dot{position:absolute;top:50%;width:16px;height:16px;border-radius:50%;transform:translate(-50%,-50%);border:3px solid #fff;box-shadow:0 0 0 2px var(--shape-color);}
+  .shape-caption{font-size:12.5px;color:var(--ink-soft);margin-top:8px;text-align:center;}
+
+  .formula{display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:var(--accent-bg,#faf7fb);border-radius:14px;padding:16px 18px;margin:18px 0 4px;}
+  .formula .chip{background:#fff;border:2px solid var(--line);border-radius:10px;padding:6px 12px;font-weight:700;font-family:'Noto Sans JP',sans-serif;}
+  .formula .result{margin-left:auto;font-family:'Noto Sans JP',sans-serif;font-weight:800;font-size:20px;color:var(--accent-color);background:#fff;padding:8px 18px;border-radius:12px;border:2px solid var(--accent-color);}
+
+  .note{background:#FBE9E9;border:2px solid #EFC6C6;color:#9C4B4B;border-radius:14px;padding:12px 16px;margin:14px 0;font-size:14px;}
+
+  .example{border:2px solid var(--line);border-radius:16px;padding:16px 18px;margin-bottom:12px;cursor:pointer;}
+  .example:hover{border-color:var(--accent-color);}
+  .example .jpline{font-family:'Noto Sans JP',sans-serif;font-size:17px;}
+  .example .hl{padding:1px 3px;border-radius:5px;font-weight:700;}
+  .example .romaji{font-size:13px;color:var(--ink-soft);font-style:italic;margin-top:6px;}
+  .example .reveal{max-height:0;overflow:hidden;transition:max-height .3s ease;}
+  .example.open .reveal{max-height:120px;margin-top:10px;}
+
+  .compare-wrap{max-width:900px;margin:26px auto 0;padding:0 20px;}
+  .compare-card{border-radius:16px;padding:18px 20px;margin-bottom:14px;background:#faf8fc;border:2px solid var(--line);}
+  .compare-pair{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px;}
+  .compare-pair .side{border-radius:12px;padding:12px 14px;font-family:'Noto Sans JP',sans-serif;}
+  .compare-pair .side.ok{background:var(--point-b-bg);border:2px solid var(--point-b);}
+  .compare-pair .side.bad{background:#FBE9E9;border:2px solid #E27676;}
+  .compare-pair .tag{display:block;font-family:'Be Vietnam Pro',sans-serif;font-weight:700;font-size:12px;margin-bottom:6px;}
+  .compare-pair .side.ok .tag{color:#1E7A6F;}
+  .compare-pair .side.bad .tag{color:#B54444;}
+  @media (max-width:640px){ .compare-pair{grid-template-columns:1fr;} }
+
+  .qcard{background:var(--card);border-radius:18px;box-shadow:var(--shadow-sm);padding:20px 22px;margin-bottom:16px;border:2px solid var(--line);}
+  .opt{font-family:'Noto Sans JP',sans-serif;font-weight:700;border:2px solid var(--line);background:#fff;border-radius:12px;padding:9px 18px;cursor:pointer;margin:4px;}
+  .opt.correct{background:#E6F5EC;border-color:#4CAF7D;color:#2C7A4E;}
+  .opt.wrong{background:#FBE9E9;border-color:#E27676;color:#B54444;}
+  .qexplain{display:none;margin-top:12px;font-size:13.5px;color:var(--ink-soft);background:#faf8fc;border-radius:10px;padding:10px 14px;}
+  .qcard.answered .qexplain{display:block;}
+  #checkBtn,#retryBtn{font-family:'Baloo 2',sans-serif;font-weight:700;background:var(--point-b);color:#fff;border:none;border-radius:14px;padding:14px 34px;cursor:pointer;}
+  #checkBtn:disabled{opacity:.4;cursor:not-allowed;}
+  .score-card{display:none;text-align:center;background:var(--card);border-radius:20px;box-shadow:var(--shadow);padding:30px;margin-top:18px;}
+
+  @media (max-width:640px){ .card{padding:20px 16px;} }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <span class="eyebrow">🎯 NGỮ PHÁP N3</span>
+  <h1><span class="jp">Aがちだ</span> vs <span class="jp">Aぎみ（気味）だ</span></h1>
+  <p>Cả hai đều diễn tả "có xu hướng nghiêng về một trạng thái không tốt lắm", nhưng một cái nói về <b>thói quen thường ngày</b>, còn cái kia nói về <b>trạng thái ngay lúc này</b>.</p>
+</div>
+
+<div class="tabbar" id="tabbar">
+  <button class="tab-btn active" data-key="a"><span class="jp">Aがちだ</span><span class="sub">Xu hướng thường ngày</span></button>
+  <button class="tab-btn" data-key="b"><span class="jp">Aぎみだ</span><span class="sub">Trạng thái hiện tại</span></button>
+</div>
+
+<div class="panel active" id="panel-a" style="--accent-color:var(--point-a)">
+  <div class="card">
+    <h2><span class="jp">Aがちだ</span></h2>
+    <div class="timeshape" style="--shape-bg:var(--point-a-bg); --shape-color:var(--point-a)">
+      <div class="track">
+        <div class="dot" style="left:15%;background:var(--point-a);"></div>
+        <div class="dot" style="left:40%;background:var(--point-a);"></div>
+        <div class="dot" style="left:63%;background:var(--point-a);"></div>
+        <div class="dot" style="left:88%;background:var(--point-a);"></div>
+      </div>
+      <div class="shape-caption">Nhiều lần lặp lại theo thời gian — đây là "thói quen", "khuynh hướng" chứ không phải chuyện của riêng lúc này.</div>
+    </div>
+    <p>Diễn tả rằng <b>trong cả một khoảng thời gian dài (thói quen)</b>, tỉ lệ A xảy ra khá cao, "hay bị A", "thường A", "hễ cứ có dịp là lại A". Chủ yếu nói về <b>hành động của người</b> hoặc <b>trạng thái vận động của sự vật</b>. Phần lớn A là điều <b>không mấy tốt đẹp</b> (khiến người nghe lo lắng, không hài lòng, chê trách).</p>
+    <div class="formula" style="--accent-bg:var(--point-a-bg)">
+      <span class="chip jp">Vます (bỏ ます)</span><span class="chip jp">Danh từ</span><span class="result jp">＋ がちだ</span>
+    </div>
+    <p style="margin-top:14px;"><b>Cách dùng khác:</b> <span class="jp">「Aがちにb」</span> = "với dáng vẻ/kiểu như A, làm B".</p>
+  </div>
+  <div id="examples-a"></div>
+</div>
+
+<div class="panel" id="panel-b" style="--accent-color:var(--point-b)">
+  <div class="card">
+    <h2><span class="jp">Aぎみ（気味）だ</span></h2>
+    <div class="timeshape" style="--shape-bg:var(--point-b-bg); --shape-color:var(--point-b)">
+      <div class="track">
+        <div class="fill" style="background:var(--point-b);opacity:.2;width:70%;"></div>
+        <div class="dot" style="left:70%;background:var(--point-b);"></div>
+      </div>
+      <div class="shape-caption">Một điểm duy nhất ngay lúc nói — "bây giờ đang hơi nghiêng về A", không nói đến chuyện lặp lại nhiều lần.</div>
+    </div>
+    <p>Diễn tả rằng <b>ngay bây giờ / dạo này</b>, có thể cảm nhận được chút dấu hiệu, sắc thái của A — "trông có vẻ hơi A", "có chút A". Chủ yếu nói về <b>trạng thái hiện tại</b> của người hoặc vật. A thường là <b>trạng thái không tốt</b>, khiến người nói/nghe cảm thấy lo lắng.</p>
+    <div class="formula" style="--accent-bg:var(--point-b-bg)">
+      <span class="chip jp">Vます (bỏ ます)</span><span class="chip jp">Danh từ</span><span class="result jp">＋ ぎみだ</span>
+    </div>
+  </div>
+  <div id="examples-b"></div>
+
+  <div class="compare-wrap">
+    <div class="compare-card">
+      <h3><span class="jp">遅れがちだ</span> vs <span class="jp">遅れぎみだ</span></h3>
+      <p>Cùng nói về "trễ giờ/chạy chậm", nhưng khác nhau ở việc đó là thói quen lặp lại hay chỉ là tình trạng ngay lúc này.</p>
+      <div class="compare-pair">
+        <div class="side ok">
+          <span class="tag jp">がちだ ✓</span>
+          <span class="jp">この時計は遅れがちだ。</span>
+        </div>
+        <div class="side ok">
+          <span class="tag jp">ぎみだ ✓</span>
+          <span class="jp">この時計は遅れぎみだ。</span>
+        </div>
+      </div>
+      <p style="margin-top:10px;font-size:13.5px;">🇻🇳 Câu 1: cái đồng hồ này <b>hay bị</b> chạy chậm (thường xuyên, nhiều lần). Câu 2: cái đồng hồ này <b>đang</b> chạy hơi chậm (ngay bây giờ).</p>
+    </div>
+
+    <div class="compare-card">
+      <h3>Tình huống: bị cảm</h3>
+      <p>Trong hội thoại "hôm qua hơi bị cảm", người nói đang mô tả <b>trạng thái ngay bây giờ</b>, không phải "tôi hay bị cảm" (thói quen) — nên chỉ <span class="jp">ぎみ</span> mới đúng.</p>
+      <div class="compare-pair">
+        <div class="side bad">
+          <span class="tag jp">がちだ ✗</span>
+          <span class="jp">昨日からちょっと風邪がちなんだ。</span>
+        </div>
+        <div class="side ok">
+          <span class="tag jp">ぎみだ ✓</span>
+          <span class="jp">昨日からちょっと風邪ぎみなんだ。</span>
+        </div>
+      </div>
+      <p style="margin-top:10px;font-size:13.5px;">🇻🇳 "Từ hôm qua tôi hơi bị cảm." — đây là chuyện <b>đang xảy ra bây giờ</b>, không phải khuynh hướng "hay bị cảm", nên dùng <span class="jp">ぎみ</span>, không dùng <span class="jp">がち</span>.</p>
+    </div>
+  </div>
+</div>
+
+<div class="wrap" style="margin-top:56px;">
+  <div style="text-align:center;margin-bottom:22px;"><h2>📝 Luyện tập nhanh</h2></div>
+  <div id="quiz"></div>
+  <div style="text-align:center;"><button id="checkBtn">Chấm điểm</button></div>
+  <div class="score-card" id="scoreCard">
+    <div id="scoreNum" style="font-family:'Baloo 2',sans-serif;font-size:52px;font-weight:800;color:var(--point-b);">0/0</div>
+    <p id="scoreMsg"></p>
+    <button id="retryBtn">Làm lại</button>
+  </div>
+</div>
+
+<script>
+const examples = {
+  a: [
+    { jp:["この時計は遅れ","がち","だ。"], romaji:"Kono tokei wa okure-gachi da.", vn:"Cái đồng hồ này hay chạy chậm (thường xuyên, hễ có dịp là lại chậm)." },
+    { jp:["彼は学校を休み","がち","だ。"], romaji:"Kare wa gakkou o yasumi-gachi da.", vn:"Cậu ấy hay nghỉ học (thường xuyên nghỉ)." },
+    { jp:["最近、忘れ物をし","がち","だ。"], romaji:"Saikin, wasuremono o shi-gachi da.", vn:"Dạo này tôi hay bỏ quên đồ." },
+    { jp:["この地域は曇り","がち","な天気が続く。"], romaji:"Kono chiiki wa kumori-gachi na tenki ga tsuzuku.", vn:"Khu vực này thời tiết cứ nhiều mây liên tục." },
+    { jp:["「じゃ、コーヒーを」と、彼女は遠慮","がち","に答えた。"], romaji:"\"Ja, koohii o\" to, kanojo wa enryo-gachi ni kotaeta.", vn:"\"Vậy cho tôi cà phê,\" cô ấy trả lời với vẻ hơi ngại ngùng, dè dặt." }
+  ],
+  b: [
+    { jp:["この時計は遅れ","ぎみ","だ。"], romaji:"Kono tokei wa okure-gimi da.", vn:"Cái đồng hồ này (hiện giờ) đang hơi chạy chậm." },
+    { jp:["昨日からちょっと風邪","ぎみ","なんだ。"], romaji:"Kinou kara chotto kaze-gimi nanda.", vn:"Từ hôm qua tôi hơi bị cảm một chút." },
+    { jp:["最近、疲れ","ぎみ","で元気が出ない。"], romaji:"Saikin, tsukare-gimi de genki ga denai.", vn:"Dạo này tôi hơi mệt nên không có sức sống." },
+    { jp:["ここ数日、太り","ぎみ","かもしれない。"], romaji:"Koko suujitsu, futori-gimi kamoshirenai.", vn:"Mấy ngày nay có lẽ tôi hơi tăng cân một chút." },
+    { jp:["彼は少し緊張","ぎみ","に話し始めた。"], romaji:"Kare wa sukoshi kinchou-gimi ni hanashi hajimeta.", vn:"Anh ấy bắt đầu nói với vẻ hơi căng thẳng." }
+  ]
+};
+const labelMap = { a:"がち", b:"ぎみ" };
+
+function renderExamples(key, containerId){
+  const container = document.getElementById(containerId);
+  examples[key].forEach((ex, i) => {
+    const div = document.createElement('div');
+    div.className = 'example';
+    div.innerHTML = `
+      <div class="jpline"><b>${i+1}.</b> ${ex.jp[0]}<span class="hl jp">${ex.jp[1]}</span>${ex.jp[2]}</div>
+      <div class="romaji">${ex.romaji}</div>
+      <div class="reveal"><p>🇻🇳 ${ex.vn}</p></div>
+    `;
+    div.addEventListener('click', () => div.classList.toggle('open'));
+    container.appendChild(div);
+  });
+}
+renderExamples('a','examples-a');
+renderExamples('b','examples-b');
+
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('panel-'+btn.dataset.key).classList.add('active');
+  });
+});
+
+const quizData = [
+  {
+    before:"この時計は毎日のように", after:"だ。（=よく遅れる）",
+    trans:"🇻🇳 Cái đồng hồ này cứ như hàng ngày đều... (=hay bị chậm)",
+    options:["遅れがち","遅れぎみ"], answer:"遅れがち",
+    explain:"「毎日のように」(cứ như mỗi ngày) là dấu hiệu của một khuynh hướng lặp lại nhiều lần → dùng がちだ, không phải trạng thái nhất thời."
+  },
+  {
+    before:"熱を測ったら37度5分あった。今日はちょっと風邪", after:"だ。",
+    trans:"🇻🇳 Đo nhiệt độ thấy 37.5 độ. Hôm nay tôi hơi bị cảm.",
+    options:["風邪がち","風邪ぎみ"], answer:"風邪ぎみ",
+    explain:"Câu nói về tình trạng sức khỏe ngay lúc này (đo được 37.5 độ hôm nay), không phải \"hay bị cảm\" → dùng ぎみだ."
+  },
+  {
+    before:"彼は昔から学校を", after:"だった。",
+    trans:"🇻🇳 Cậu ấy từ xưa đã hay nghỉ học rồi.",
+    options:["休みがち","休みぎみ"], answer:"休みがち",
+    explain:"「昔から」(từ xưa) cho thấy đây là khuynh hướng kéo dài lâu, lặp đi lặp lại → がちだ."
+  },
+  {
+    before:"最近残業が続いて、少し疲れ", after:"だ。",
+    trans:"🇻🇳 Dạo này tăng ca liên tục nên tôi hơi mệt.",
+    options:["疲れがち","疲れぎみ"], answer:"疲れぎみ",
+    explain:"「少し」(hơi một chút) mô tả mức độ mệt ngay bây giờ, không phải nói về việc \"hay mệt\" như một thói quen → ぎみだ."
+  },
+  {
+    before:"この道は雨の日、いつも渋滞", after:"だ。",
+    trans:"🇻🇳 Con đường này vào ngày mưa lúc nào cũng hay bị kẹt xe.",
+    options:["渋滞がち","渋滞ぎみ"], answer:"渋滞がち",
+    explain:"「いつも」(lúc nào cũng) chỉ ra đây là khuynh hướng lặp đi lặp lại mỗi khi trời mưa → がちだ."
+  },
+  {
+    before:"体重計に乗ったら、先週より少し太り", after:"だった。",
+    trans:"🇻🇳 Lên cân thấy nặng hơn tuần trước một chút.",
+    options:["太りがち","太りぎみ"], answer:"太りぎみ",
+    explain:"So với tuần trước, đây là sự thay đổi của trạng thái hiện tại (kết quả cân đo được), không phải khuynh hướng lâu dài → ぎみだ."
+  },
+  {
+    before:"彼女はいつも謝るとき、遠慮", after:"に話す。",
+    trans:"🇻🇳 Mỗi khi xin lỗi, cô ấy luôn nói với vẻ dè dặt, ngại ngùng.",
+    options:["遠慮がち","遠慮ぎみ"], answer:"遠慮がち",
+    explain:"「Aがちに」là mẫu diễn tả \"với dáng vẻ như A\", thường đi cùng 遠慮; đây cũng là cách cư xử lặp lại mỗi lần (いつも) → がちに."
+  },
+  {
+    before:"空を見ると、今日は朝から曇り", after:"の天気だ。",
+    trans:"🇻🇳 Nhìn lên trời, hôm nay từ sáng đã có vẻ hơi nhiều mây.",
+    options:["曇りがち","曇りぎみ"], answer:"曇りぎみ",
+    explain:"Câu chỉ mô tả bầu trời hôm nay (một thời điểm cụ thể), không phải khuynh hướng thời tiết nhiều ngày → ぎみだ. (So sánh với ví dụ 「曇りがちな天気が続く」ở trên, có 続く=kéo dài mới dùng がち.)"
+  }
+];
+const quizEl = document.getElementById('quiz');
+const state = new Array(quizData.length).fill(null);
+
+function buildQuiz(){
+  quizEl.innerHTML = '';
+  state.fill(null);
+  quizData.forEach((q, i) => {
+    const card = document.createElement('div');
+    card.className = 'qcard';
+    card.innerHTML = `
+      <div class="jp">${q.before}<span style="border-bottom:3px dotted #c9c1d1;display:inline-block;min-width:60px;"></span>${q.after}</div>
+      <div style="font-size:13px;color:var(--ink-soft);margin:6px 0 12px;">${q.trans}</div>
+      <div>${q.options.map(o => `<button class="opt jp" data-val="${o}">${o}</button>`).join('')}</div>
+      <div class="qexplain">${q.explain}</div>
+    `;
+    card.querySelectorAll('.opt').forEach(btn => {
+      btn.addEventListener('click', () => {
+        if(state[i] !== null) return;
+        state[i] = btn.dataset.val;
+        card.classList.add('answered');
+        card.querySelectorAll('.opt').forEach(b => {
+          b.disabled = true;
+          if(b.dataset.val === q.answer) b.classList.add('correct');
+          else if(b === btn) b.classList.add('wrong');
+        });
+        document.getElementById('checkBtn').disabled = !state.every(s => s !== null);
+      });
+    });
+    quizEl.appendChild(card);
+  });
+}
+buildQuiz();
+document.getElementById('checkBtn').disabled = true;
+
+document.getElementById('checkBtn').addEventListener('click', () => {
+  let score = 0;
+  quizData.forEach((q,i) => { if(state[i] === q.answer) score++; });
+  document.getElementById('scoreNum').textContent = score + '/' + quizData.length;
+  document.getElementById('scoreMsg').textContent =
+    score === quizData.length ? "Hoàn hảo! 🎉" :
+    score >= quizData.length - 2 ? "Rất tốt, chỉ còn vài chỗ cần ôn lại." :
+    "Xem lại phần giải thích rồi thử lại nhé!";
+  document.getElementById('scoreCard').style.display = 'block';
+  document.getElementById('checkBtn').style.display = 'none';
+});
+document.getElementById('retryBtn').addEventListener('click', () => {
+  document.getElementById('scoreCard').style.display = 'none';
+  document.getElementById('checkBtn').style.display = 'inline-block';
+  document.getElementById('checkBtn').disabled = true;
+  buildQuiz();
+});
+</script>
+</body>
+</html>
