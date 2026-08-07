@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aつづける vs Aとおす</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Be+Vietnam+Pro:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#FBF7F2; --card:#FFFFFF; --ink:#2E2A33; --ink-soft:#756E7E; --line:#EDE4EE;
+    --point-a:#3D5A80; --point-a-bg:#E7EEF6;
+    --point-b:#E09F3E; --point-b-bg:#FBF0DC;
+    --shadow:0 10px 30px -12px rgba(46,42,51,.16);
+    --shadow-sm:0 4px 14px -6px rgba(46,42,51,.14);
+    --radius:20px;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:radial-gradient(circle at 8% 0%,#eef3f8 0%,transparent 45%),radial-gradient(circle at 100% 10%,#fbf3e3 0%,transparent 40%),var(--bg);color:var(--ink);font-family:'Be Vietnam Pro',sans-serif;line-height:1.65;padding-bottom:60px;}
+  .jp{font-family:'Noto Sans JP',sans-serif;}
+  h1,h2,h3{font-family:'Baloo 2',sans-serif;}
+  .wrap{max-width:900px;margin:0 auto;padding:0 20px;}
+
+  .hero{max-width:900px;margin:0 auto;padding:48px 20px 20px;text-align:center;}
+  .hero .eyebrow{display:inline-flex;gap:8px;font-size:13px;font-weight:700;letter-spacing:.06em;color:var(--point-b);background:var(--point-b-bg);padding:6px 14px;border-radius:999px;margin-bottom:18px;}
+  .hero h1{font-size:clamp(26px,5vw,40px);font-weight:800;margin:0 0 10px;}
+  .hero p{color:var(--ink-soft);max-width:580px;margin:0 auto;}
+
+  .tabbar{max-width:900px;margin:40px auto 0;padding:0 20px;display:grid;grid-template-columns:repeat(2,1fr);gap:10px;}
+  .tab-btn{border:2px solid var(--line);background:var(--card);border-radius:16px;padding:14px 8px;cursor:pointer;text-align:center;transition:.15s;font-size:20px;}
+  .tab-btn:hover{transform:translateY(-3px);box-shadow:var(--shadow-sm);}
+  .tab-btn.active{border-color:var(--accent);background:var(--accent-bg);box-shadow:var(--shadow-sm);}
+  .tab-btn[data-key="a"]{--accent:var(--point-a);--accent-bg:var(--point-a-bg);}
+  .tab-btn[data-key="b"]{--accent:var(--point-b);--accent-bg:var(--point-b-bg);}
+  .tab-btn .sub{display:block;font-family:'Be Vietnam Pro',sans-serif;font-size:12px;font-weight:600;color:var(--ink-soft);margin-top:4px;}
+
+  .panel{display:none;max-width:900px;margin:26px auto 0;padding:0 20px;}
+  .panel.active{display:block;}
+  .card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:28px 26px;margin-bottom:20px;}
+
+  .timeshape{background:var(--shape-bg);border-radius:14px;padding:18px 20px 14px;margin:16px 0 20px;}
+  .track{position:relative;height:14px;border-radius:999px;background:#fff;box-shadow:inset 0 0 0 2px var(--line);overflow:visible;}
+  .track .fill{position:absolute;top:0;bottom:0;border-radius:999px;}
+  .track .arrow{position:absolute;top:50%;right:-10px;width:0;height:0;border-top:8px solid transparent;border-bottom:8px solid transparent;border-left:12px solid var(--shape-color);transform:translateY(-50%);}
+  .track .flag{position:absolute;top:-16px;width:3px;height:26px;background:var(--shape-color);}
+  .track .flag::after{content:'';position:absolute;top:-2px;left:3px;width:14px;height:10px;background:var(--shape-color);clip-path:polygon(0 0,100% 25%,0 50%);}
+  .shape-label{font-size:12.5px;color:var(--ink-soft);margin-top:14px;text-align:center;}
+
+  .formula{display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:var(--accent-bg,#faf7fb);border-radius:14px;padding:16px 18px;margin:18px 0 4px;}
+  .formula .chip{background:#fff;border:2px solid var(--line);border-radius:10px;padding:6px 12px;font-weight:700;font-family:'Noto Sans JP',sans-serif;}
+  .formula .result{margin-left:auto;font-family:'Noto Sans JP',sans-serif;font-weight:800;font-size:20px;color:var(--accent-color);background:#fff;padding:8px 18px;border-radius:12px;border:2px solid var(--accent-color);}
+
+  .example{border:2px solid var(--line);border-radius:16px;padding:16px 18px;margin-bottom:12px;cursor:pointer;}
+  .example:hover{border-color:var(--accent-color);}
+  .example .jpline{font-family:'Noto Sans JP',sans-serif;font-size:17px;}
+  .example .hl{padding:1px 3px;border-radius:5px;font-weight:700;}
+  .example .romaji{font-size:13px;color:var(--ink-soft);font-style:italic;margin-top:6px;}
+  .example .reveal{max-height:0;overflow:hidden;transition:max-height .3s ease;}
+  .example.open .reveal{max-height:120px;margin-top:10px;}
+
+  .compare-card{border-radius:16px;padding:18px 20px;margin-bottom:14px;background:#faf8fc;border:2px solid var(--line);}
+  .compare-pair{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px;}
+  .compare-pair .side{border-radius:12px;padding:12px 14px;}
+  .compare-pair .side.a{background:var(--point-a-bg);}
+  .compare-pair .side.b{background:var(--point-b-bg);}
+  .compare-pair .side .tag{font-size:11.5px;font-weight:700;margin-bottom:6px;}
+  .compare-pair .side.a .tag{color:var(--point-a);}
+  .compare-pair .side.b .tag{color:var(--point-b);}
+  .compare-pair .jpline{font-family:'Noto Sans JP',sans-serif;font-size:15px;}
+  .compare-pair .vn{font-size:12.5px;color:var(--ink-soft);margin-top:6px;}
+  @media (max-width:640px){.compare-pair{grid-template-columns:1fr;}}
+
+  .qcard{background:var(--card);border-radius:18px;box-shadow:var(--shadow-sm);padding:20px 22px;margin-bottom:16px;border:2px solid var(--line);}
+  .opt{font-family:'Noto Sans JP',sans-serif;font-weight:700;border:2px solid var(--line);background:#fff;border-radius:12px;padding:9px 18px;cursor:pointer;margin:4px;}
+  .opt.correct{background:#E6F5EC;border-color:#4CAF7D;color:#2C7A4E;}
+  .opt.wrong{background:#FBE9E9;border-color:#E27676;color:#B54444;}
+  .qexplain{display:none;margin-top:12px;font-size:13.5px;color:var(--ink-soft);background:#faf8fc;border-radius:10px;padding:10px 14px;}
+  .qcard.answered .qexplain{display:block;}
+  #checkBtn,#retryBtn{font-family:'Baloo 2',sans-serif;font-weight:700;background:var(--point-a);color:#fff;border:none;border-radius:14px;padding:14px 34px;cursor:pointer;}
+  .score-card{display:none;text-align:center;background:var(--card);border-radius:20px;box-shadow:var(--shadow);padding:30px;margin-top:18px;}
+
+  @media (max-width:640px){ .card{padding:20px 16px;} }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <span class="eyebrow">📘 NGỮ PHÁP N3 · Bài 06</span>
+  <h1><span class="jp">Aつづける</span> vs <span class="jp">Aとおす</span></h1>
+  <p>Cả hai đều nói "không dừng lại, cứ tiếp tục làm A" — nhưng chỉ một bên có <b>điểm kết thúc được xác định từ trước</b>, mang nghĩa "duy trì đến cùng, đến hết".</p>
+</div>
+
+<div class="tabbar" id="tabbar">
+  <button class="tab-btn active" data-key="a"><span class="jp">Aつづける（続ける）</span><span class="sub">cứ tiếp tục, chưa rõ khi nào dừng</span></button>
+  <button class="tab-btn" data-key="b"><span class="jp">Aとおす（通す）</span><span class="sub">duy trì đến hết, đến cùng</span></button>
+</div>
+
+<div class="panel active" id="panel-a" style="--accent-color:var(--point-a)">
+  <div class="card">
+    <h2><span class="jp">動詞ます形 ＋ つづける</span></h2>
+    <div class="timeshape" style="--shape-bg:var(--point-a-bg); --shape-color:var(--point-a)">
+      <div class="track"><div class="fill" style="left:0;right:14px;background:var(--point-a);opacity:.85;"></div><div class="arrow"></div></div>
+      <div class="shape-label">Hành động/trạng thái cứ tiếp diễn mãi, không dừng lại — chưa rõ (hoặc không quan trọng) khi nào kết thúc</div>
+    </div>
+    <p>Diễn tả việc <b>bắt đầu A rồi không dừng lại, cứ tiếp tục mãi</b>. Điểm mấu chốt là "không từ bỏ giữa chừng" — không nhấn mạnh đến việc A sẽ kết thúc khi nào. Có thể dùng cả với <b>động từ vô ý chí</b> (tự nó xảy ra, không do người/vật chủ động).</p>
+    <div class="formula" style="--accent-bg:var(--point-a-bg)">
+      <span class="chip jp">歩きます → 歩き</span><span class="result jp">＋ つづける</span>
+    </div>
+  </div>
+  <div id="examples-a"></div>
+</div>
+
+<div class="panel" id="panel-b" style="--accent-color:var(--point-b)">
+  <div class="card">
+    <h2><span class="jp">動詞ます形 ＋ とおす</span></h2>
+    <div class="timeshape" style="--shape-bg:var(--point-b-bg); --shape-color:var(--point-b)">
+      <div class="track"><div class="fill" style="left:0;right:20%;background:var(--point-b);opacity:.85;"></div><div class="flag" style="left:80%;"></div></div>
+      <div class="shape-label">Hành động được duy trì liên tục cho tới một điểm kết thúc đã định — "đi hết đường, làm đến cùng"</div>
+    </div>
+    <p>Cũng diễn tả việc duy trì A liên tục, nhưng <b>điểm kết thúc đã được xác định từ trước</b> (một quãng đường, một mùa giải, "đến cùng", "đến cuối") và người nói muốn nhấn mạnh việc <b>duy trì cho tới hết điểm đó</b>. Vì cần có ý chí để "đi đến cùng", <b>không dùng được với động từ vô ý chí</b>.</p>
+    <div class="formula" style="--accent-bg:var(--point-b-bg)">
+      <span class="chip jp">歩きます → 歩き</span><span class="result jp">＋ とおす</span>
+    </div>
+  </div>
+  <div id="examples-b"></div>
+
+  <div class="compare-card">
+    <h3><span class="jp">続ける</span> vs <span class="jp">通す</span> — đang tiếp diễn hay đã đi hết chặng?</h3>
+    <p>Ví dụ kinh điển: một đội bóng đang thắng liên tiếp. Nếu mùa giải <b>chưa kết thúc</b>, chuỗi thắng vẫn đang tiếp diễn → 続ける. Nói 通す sẽ ngầm hiểu là chuỗi thắng đó <b>đã kết thúc</b> — không phù hợp nếu đội vẫn đang thi đấu.</p>
+    <div class="compare-pair">
+      <div class="side a">
+        <div class="tag jp">勝ち続けている</div>
+        <div class="jpline">このチームはずっと勝ち続けている。</div>
+        <div class="vn">Đội này vẫn đang thắng liên tiếp (chưa biết đến khi nào).</div>
+      </div>
+      <div class="side b">
+        <div class="tag jp">✕ 勝ち通している</div>
+        <div class="jpline">（まだ試合中なら不適当）</div>
+        <div class="vn">Ngầm hiểu chuỗi thắng đã có điểm kết thúc — không hợp khi mùa giải chưa xong.</div>
+      </div>
+    </div>
+    <div class="compare-pair">
+      <div class="side a">
+        <div class="tag jp">溶け続けている</div>
+        <div class="jpline">南極の氷は溶け続けているらしい。</div>
+        <div class="vn">Băng ở Nam Cực nghe nói cứ tan mãi (動詞vô ý chí, dùng つづける được).</div>
+      </div>
+      <div class="side b">
+        <div class="tag jp">✕ 溶け通してしまった</div>
+        <div class="jpline">（冷蔵庫の氷は全部、溶け通してしまった とは言わない）</div>
+        <div class="vn">「溶ける」là động từ vô ý chí nên không dùng được với とおす.</div>
+      </div>
+    </div>
+    <p style="margin-top:14px;">Dạng danh từ <span class="jp">とおし</span> (「Aとおし」) đổi hẳn sang nghĩa khác, không liên quan đến "duy trì đến cùng" nữa.</p>
+  </div>
+</div>
+
+<div class="wrap" style="margin-top:56px;">
+  <div style="text-align:center;margin-bottom:22px;"><h2>📝 Luyện tập nhanh</h2></div>
+  <div id="quiz"></div>
+  <div style="text-align:center;"><button id="checkBtn">Chấm điểm</button></div>
+  <div class="score-card" id="scoreCard">
+    <div id="scoreNum" style="font-family:'Baloo 2',sans-serif;font-size:52px;font-weight:800;color:var(--point-a);">0/0</div>
+    <p id="scoreMsg"></p>
+    <button id="retryBtn">Làm lại</button>
+  </div>
+</div>
+
+<script>
+const examples = {
+  a: [
+    {jp:["日が暮れるまで帰りたくなかったので、彼はそのまま歩き","続けた",""], romaji:"Hi ga kureru made kaeritakunakatta node, kare wa sonomama arukitsuzuketa.", vn:"Vì không muốn về nhà cho đến khi trời tối, anh ấy cứ đi bộ mãi."},
+    {jp:["南極の氷は、温暖化の影響で溶け","続けている","らしい。"], romaji:"Nankyoku no koori wa, ondanka no eikyou de toketsuzukete iru rashii.", vn:"Nghe nói băng ở Nam Cực cứ tan mãi do ảnh hưởng của nóng lên toàn cầu."},
+    {jp:["このチームはずっと勝ち","続けている",""], romaji:"Kono chiimu wa zutto kachitsuzukete iru.", vn:"Đội này vẫn đang thắng liên tiếp mãi."},
+    {jp:["赤ちゃんは夜中じゅう泣き","続けた",""], romaji:"Akachan wa yonaka juu nakitsuzuketa.", vn:"Em bé cứ khóc mãi suốt cả đêm."},
+    {jp:["彼女は10年間、日記を書き","続けている",""], romaji:"Kanojo wa juunenkan, nikki wo kakitsuzukete iru.", vn:"Cô ấy đã viết nhật ký liên tục suốt 10 năm."}
+  ],
+  b: [
+    {jp:["ほぼ1日かけて、約25キロのコースを歩き","通した",""], romaji:"Hobo ichinichi kakete, yaku nijuugo-kiro no koosu wo arukitooshita.", vn:"Mất gần một ngày, anh ấy đã đi bộ hết quãng đường khoảng 25km."},
+    {jp:["彼は最後まで自分の意見を言い","通した",""], romaji:"Kare wa saigo made jibun no iken wo iitooshita.", vn:"Anh ấy đã kiên trì bảo vệ ý kiến của mình đến cùng."},
+    {jp:["苦しいレースだったが、彼はトップを走り","通した",""], romaji:"Kurushii reesu datta ga, kare wa toppu wo hashiritooshita.", vn:"Dù là một cuộc đua vất vả, anh ấy vẫn dẫn đầu cho đến khi về đích."},
+    {jp:["彼女はその秘密を最後まで隠し","通した",""], romaji:"Kanojo wa sono himitsu wo saigo made kakushitooshita.", vn:"Cô ấy đã giữ kín bí mật đó đến cùng."},
+    {jp:["このチームは今シーズン、優勝を決めるまで勝ち","通した",""], romaji:"Kono chiimu wa kon shiizun, yuushou wo kimeru made kachitooshita.", vn:"Đội này đã thắng liên tục cho đến khi giành chức vô địch mùa này (chuỗi thắng đã có điểm kết thúc)."}
+  ]
+};
+
+function renderExamples(key, containerId){
+  const container = document.getElementById(containerId);
+  examples[key].forEach((ex, i) => {
+    const div = document.createElement('div');
+    div.className = 'example';
+    div.innerHTML = `
+      <div class="jpline"><b>${i+1}.</b> ${ex.jp[0]}<span class="hl jp" style="background:var(--point-${key}-bg);color:var(--point-${key});">${ex.jp[1]}</span>${ex.jp[2]}</div>
+      <div class="romaji">${ex.romaji}</div>
+      <div class="reveal"><p>🇻🇳 ${ex.vn}</p></div>
+    `;
+    div.addEventListener('click', () => div.classList.toggle('open'));
+    container.appendChild(div);
+  });
+}
+renderExamples('a','examples-a');
+renderExamples('b','examples-b');
+
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('panel-'+btn.dataset.key).classList.add('active');
+  });
+});
+
+const quizData = [
+  {before:"日が暮れるまで帰りたくなかったので、彼はそのまま歩き", after:"。", trans:"Vì không muốn về nhà cho đến khi trời tối, anh ấy cứ đi bộ mãi.", options:["続けた","通した"], answer:"続けた", explain:"Câu chỉ nói「やめずに、ずっと」đi mãi, không có điểm kết thúc quãng đường được xác định trước → dùng つづける."},
+  {before:"南極の氷は、温暖化の影響で溶け", after:"らしい。", trans:"Nghe nói băng ở Nam Cực cứ tan mãi do ảnh hưởng của nóng lên toàn cầu.", options:["続けている","通している"], answer:"続けている", explain:"「溶ける」là động từ vô ý chí (tự nó xảy ra), とおす không dùng được với loại động từ này."},
+  {before:"このチームは今シーズン、ずっと勝ち", after:"いる。", trans:"Đội này vẫn đang thắng liên tiếp suốt mùa này.", options:["続けて","通して"], answer:"続けて", explain:"Mùa giải chưa kết thúc, chuỗi thắng vẫn đang tiếp diễn, chưa có điểm dừng xác định → つづける."},
+  {before:"ほぼ1日かけて、約25キロのコースを歩き", after:"。", trans:"Mất gần một ngày, anh ấy đã đi bộ hết quãng đường khoảng 25km.", options:["続けた","通した"], answer:"通した", explain:"Quãng đường 25km là điểm kết thúc đã xác định từ trước, câu nhấn mạnh việc đi hết quãng đường đó → とおす."},
+  {before:"彼は最後まで自分の意見を言い", after:"。", trans:"Anh ấy đã kiên trì bảo vệ ý kiến của mình đến cùng.", options:["続けた","通した"], answer:"通した", explain:"「最後まで」(đến cùng) là dấu hiệu rõ ràng của とおす — duy trì đến một điểm kết thúc đã định."},
+  {before:"彼女はその秘密を最後まで隠し", after:"。", trans:"Cô ấy đã giữ kín bí mật đó đến cùng.", options:["続けた","通した"], answer:"通した", explain:"「最後まで」+ ý chí giữ bí mật đến hết → とおす."},
+  {before:"停電のため、冷蔵庫の氷は全部", after:"。", trans:"Do mất điện, đá trong tủ lạnh đã tan hết cả.", options:["溶け続けた","溶け通した"], answer:"溶け続けた", explain:"「溶ける」là động từ vô ý chí nên không thể dùng とおす — chỉ có thể nói 溶け続けた."},
+  {before:"赤ちゃんは夜中じゅう泣き", after:"。", trans:"Em bé cứ khóc mãi suốt cả đêm.", options:["続けた","通した"], answer:"続けた", explain:"「夜中じゅう」(suốt cả đêm) diễn tả việc khóc liên tục nhưng không nhấn mạnh một điểm kết thúc đã định trước → つづける."}
+];
+const quizEl = document.getElementById('quiz');
+const state = new Array(quizData.length).fill(null);
+
+function buildQuiz(){
+  quizEl.innerHTML = '';
+  state.fill(null);
+  quizData.forEach((q, i) => {
+    const card = document.createElement('div');
+    card.className = 'qcard';
+    card.innerHTML = `
+      <div class="jp">${q.before}<span style="border-bottom:3px dotted #c9c1d1;display:inline-block;min-width:60px;"></span>${q.after}</div>
+      <div style="font-size:13px;color:var(--ink-soft);margin:6px 0 12px;">${q.trans}</div>
+      <div>${q.options.map(o => `<button class="opt jp" data-val="${o}">${o}</button>`).join('')}</div>
+      <div class="qexplain">${q.explain}</div>
+    `;
+    card.querySelectorAll('.opt').forEach(btn => {
+      btn.addEventListener('click', () => {
+        if(state[i] !== null) return;
+        state[i] = btn.dataset.val;
+        card.classList.add('answered');
+        card.querySelectorAll('.opt').forEach(b => {
+          b.disabled = true;
+          if(b.dataset.val === q.answer) b.classList.add('correct');
+          else if(b === btn) b.classList.add('wrong');
+        });
+        document.getElementById('checkBtn').disabled = !state.every(s => s !== null);
+      });
+    });
+    quizEl.appendChild(card);
+  });
+}
+buildQuiz();
+document.getElementById('checkBtn').disabled = true;
+
+document.getElementById('checkBtn').addEventListener('click', () => {
+  let score = 0;
+  quizData.forEach((q,i) => { if(state[i] === q.answer) score++; });
+  document.getElementById('scoreNum').textContent = score + '/' + quizData.length;
+  document.getElementById('scoreMsg').textContent =
+    score === quizData.length ? "Hoàn hảo! 🎉" :
+    score >= quizData.length - 2 ? "Rất tốt, chỉ còn vài chỗ cần ôn lại." :
+    "Xem lại phần giải thích rồi thử lại nhé!";
+  document.getElementById('scoreCard').style.display = 'block';
+  document.getElementById('checkBtn').style.display = 'none';
+});
+document.getElementById('retryBtn').addEventListener('click', () => {
+  document.getElementById('scoreCard').style.display = 'none';
+  document.getElementById('checkBtn').style.display = 'inline-block';
+  document.getElementById('checkBtn').disabled = true;
+  buildQuiz();
+});
+</script>
+</body>
+</html>
